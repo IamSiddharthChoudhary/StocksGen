@@ -44,7 +44,7 @@ export interface TableType {
   numberOfAnalysts: string;
   meanTargetPrice: string;
   impliedChange: string;
-  risksAndMitigation: string;
+  risksAndMitigation?: string;
   url1?: string;
   url2?: string;
   conclusion: string;
