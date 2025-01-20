@@ -41,7 +41,7 @@ export async function POST(req) {
 
     const stockData = {
       name: quoteSummary.price?.longName || "N/A",
-      description: quoteSummary.summaryProfile?.longBusinessSummary || "N/A",
+      desc: quoteSummary.summaryProfile?.longBusinessSummary || "N/A",
       marketCap: formatLargeNumber(quoteSummary.price?.marketCap),
       sharesOutstanding: formatLargeNumber(
         quoteSummary.defaultKeyStatistics?.sharesOutstanding
@@ -59,7 +59,7 @@ export async function POST(req) {
         quoteSummary.financialData?.debtToEquity?.toFixed(2) || "N/A",
       currentRatio:
         quoteSummary.financialData?.currentRatio?.toFixed(2) || "N/A",
-      strengthsAndCatalysts: "Requires manual input or additional API",
+      stghsAndCat: "Requires manual input or additional API",
       analystRating:
         quoteSummary.financialData?.recommendationMean?.toFixed(2) || "N/A",
       numberOfAnalysts:
