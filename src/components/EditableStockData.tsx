@@ -106,7 +106,9 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
   }, [conclusion, data, id, client, companyDescription]);
 
   useEffect(() => {
-    // const divRate = await fetch(`https://api.nasdaq.com/api/quote/${id}/dividends?assetclass=stocks`)
+    const divRate = await fetch(
+      `https://api.nasdaq.com/api/quote/${id}/dividends?assetclass=stocks`
+    );
 
     if (!cachedData) {
       setCachedData(data);
@@ -1053,7 +1055,7 @@ function CompanyOverview({
     <Card className="flex w-[80vw] h-[75vh] bg-zinc-900 shadow-2xl shadow-cyan-400 text-white border-0">
       <CardHeader className="flex-1 p-16 justify-center">
         <CardTitle className="barlow-bolds text-5xl pb-3 font-bold text-white bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 inline-block text-transparent bg-clip-text">
-          {name}
+          {extractName(name)}
         </CardTitle>
         <EditableText
           hasChanged={hasChanged}
@@ -1618,4 +1620,10 @@ function parsePointsToString(obj: Strength[]) {
   });
 
   return str;
+}
+
+function extractName(input: string) {
+  if (!input) return "";
+  const parts = input.split("-");
+  return parts.length > 1 ? parts[1].trim() : input.trim();
 }
