@@ -77,7 +77,6 @@ export async function POST(req) {
               100
             ).toFixed(2) + "%"
           : "N/A",
-      risksAndMitigation: "Requires manual input or additional API",
       recommendation:
         quoteSummary.recommendationTrend?.trend &&
         quoteSummary.recommendationTrend.trend[0]?.strongBuy &&
