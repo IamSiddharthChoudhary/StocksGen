@@ -25,6 +25,8 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { createSupabaseClient } from "@/lib/supaBaseClient";
 import { Loader2 } from "@/components/ui/loader";
 import SaveButton from "./ui/saveButton";
+import Refresh from "./ui/refreshButton";
+import { useRouter } from "next/navigation";
 
 interface StockDataDisplayProps {
   data: TableType;
@@ -38,6 +40,7 @@ interface Strength {
 }
 
 export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
+  const [calls, setCalls] = useState(0);
   const [client, setClient] = useState<SupabaseClient | null>(null);
   const [dataSave, setDataSave] = useState<TableType>(data);
   const [isSaving, setIsSaving] = useState(false);
@@ -45,6 +48,8 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
   const [editedVals, setEditedVals] = useState<EditedValType>({});
   const [companyDescription, setCompanyDescription] = useState<string>("");
   const [hasChanged, setHasChanged] = useState(false);
+  const [dividendRate, setDividentRate] = useState("");
+  const router = useRouter();
   const [imageSrc, setImageSrc] = useState<string>(
     "https://images.unsplash.com/photo-1456930266018-fda42f7404a7?q=80&w=1595&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   );
@@ -97,6 +102,12 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
   }, []);
 
   useEffect(() => {
+    defaultSave();
+  }, [conclusion, data, id, client, companyDescription]);
+
+  useEffect(() => {
+    // const divRate = await fetch(`https://api.nasdaq.com/api/quote/${id}/dividends?assetclass=stocks`)
+
     if (!cachedData) {
       setCachedData(data);
     }
@@ -108,29 +119,28 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
         let { data: companyData, error } = await client
           .from("company")
           .select("description")
-          .eq("name", `${userId}-${data.name}`);
+          .eq("name", `${userId}-${data.name}`)
+          .single();
 
         if (!companyData) {
           const { data: defaultData, error } = await client
             .from("company")
             .select("description")
-            .eq("name", data.name);
+            .eq("name", data.name)
+            .single();
 
           companyData = defaultData;
         }
 
-        if (error) throw error;
-
         if (companyData && companyData.description) {
           setCompanyDescription(companyData.description);
-          setImageSrc(cachedData.url1 || "");
         } else {
           const desc = await dsc(
             `Give ${cachedData.name} company's description in 50-70 words`
           );
           setCompanyDescription(desc);
-          setImageSrc(cachedData.url1 || "");
         }
+        setImageSrc(cachedData.url1 || "");
       } catch (error) {
         console.error("Error fetching company overview:", error);
         const desc = await dsc(
@@ -150,58 +160,66 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
         let { data: metricsData, error } = await client
           .from("company")
           .select(
-            "marketCap,sharesOutstanding,float,evEbitda,peTtm,dividendRate"
+            "marketCap,marketCapDsc,sharesOutstanding,sharesOutstandingDsc,float,floatDsc,evEbitda,evEbitdaDsc,peTtm,peTtmDsc,dividendRate,dividendRateDsc"
           )
-          .eq("name", `${userId}-${data.name}`);
+          .eq("name", `${userId}-${data.name}`)
+          .single();
 
         if (!metricsData) {
           const { data: defalutData, error } = await client
             .from("company")
             .select(
-              "marketCap,sharesOutstanding,float,evEbitda,peTtm,dividendRate"
+              "marketCap,marketCapDsc,sharesOutstanding,sharesOutstandingDsc,float,floatDsc,evEbitda,evEbitdaDsc,peTtm,peTtmDsc,dividendRate,dividendRateDsc"
             )
-            .eq("name", data.name);
+            .eq("name", data.name)
+            .single();
 
           metricsData = defalutData;
         }
-        if (error) throw error;
 
         const metricsWithDescriptions = [
           {
             label: "Market Cap",
-            value: "$" + cachedData.marketCap,
+            value:
+              "$" +
+              roundAndConvert(metricsData?.marketCap || cachedData.marketCap),
             name: "marketCap",
-            description: metricsData?.marketCap,
+            description: metricsData?.marketCapDsc,
           },
           {
             label: "Shares Outstanding",
-            value: "$" + cachedData.sharesOutstanding,
+            value:
+              "$" +
+              roundAndConvert(
+                metricsData?.sharesOutstanding || cachedData.sharesOutstanding
+              ),
             name: "sharesOutstanding",
-            description: metricsData?.sharesOutstanding,
+            description: metricsData?.sharesOutstandingDsc,
           },
           {
             label: "Shares Float",
-            value: "$" + cachedData.float,
+            value:
+              "$" + roundAndConvert(metricsData?.float || cachedData.float),
             name: "float",
-            description: metricsData?.float,
+            description: metricsData?.floatDsc,
           },
           {
             label: "EV/EBITDA",
-            value: cachedData.evEbitda + "x",
+            value: (metricsData?.evEbitda || cachedData.evEbitda) + "x",
             name: "evEbitda",
-            description: metricsData?.evEbitda,
+            description: metricsData?.evEbitdaDsc,
           },
           {
             label: "P/E",
-            value: cachedData.peTtm + "x",
+            value: (metricsData?.peTtm || cachedData.peTtm) + "x",
             name: "peTtm",
-            description: metricsData?.peTtm,
+            description: metricsData?.peTtmDsc,
           },
           {
             label: "Dividend Rate",
             value: cachedData.dividendRate + "x",
             name: "dividendRate",
-            description: metricsData?.dividendRate,
+            description: metricsData?.dividendRateDsc,
           },
         ];
 
@@ -239,41 +257,53 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
       try {
         let { data: financialData, error } = await client
           .from("company")
-          .select("cashPosition,totalDebt,debtToEquity,currentRatio")
-          .eq("name", `${userId}-${data.name}`);
+          .select(
+            "cashPosition,cashPositionDsc,totalDebt,totalDebtDsc,debtToEquity,debtToEquityDsc,currentRatio,currentRatioDsc"
+          )
+          .eq("name", `${userId}-${data.name}`)
+          .single();
 
         if (!financialData) {
           const { data: defaultData, error } = await client
             .from("company")
-            .select("cashPosition,totalDebt,debtToEquity,currentRatio")
-            .eq("name", data.name);
+            .select(
+              "cashPosition,cashPositionDsc,totalDebt,totalDebtDsc,debtToEquity,debtToEquityDsc,currentRatio,currentRatioDsc"
+            )
+            .eq("name", data.name)
+            .single();
           financialData = defaultData;
         }
-
-        if (error) throw error;
 
         const financialsData = [
           {
             label: "Cash Position",
-            value: "$" + cachedData.cashPosition,
+            value:
+              "$" +
+              roundAndConvert(
+                financialData?.cashPosition || cachedData.cashPosition
+              ),
             name: "cashPosition",
             description: financialData?.cashPositionDsc,
           },
           {
             label: "Total Debt",
-            value: "$" + cachedData.totalDebt,
+            value:
+              "$" +
+              roundAndConvert(financialData?.totalDebt || cachedData.totalDebt),
             name: "totalDebt",
             description: financialData?.totalDebtDsc,
           },
           {
             label: "Debt to Equity",
-            value: cachedData.debtToEquity + "x",
+            value:
+              (financialData?.debtToEquity || cachedData.debtToEquity) + "x",
             name: "debtToEquity",
             description: financialData?.debtToEquityDsc,
           },
           {
             label: "Current Ratio",
-            value: cachedData.currentRatio + "x",
+            value:
+              (financialData?.currentRatio || cachedData.currentRatio) + "x",
             name: "currentRatio",
             description: financialData?.currentRatioDsc,
           },
@@ -350,15 +380,16 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
         let { data: strengthsData, error } = await client
           .from("company")
           .select("strengthsAndCatalysts")
-          .eq("name", `${userId}-${data.name}`);
+          .eq("name", `${userId}-${data.name}`)
+          .single();
 
         if (!strengthsData) {
           const { data: defaultData, error: defaultError } = await client
             .from("company")
             .select("strengthsAndCatalysts")
-            .eq("name", data.name);
+            .eq("name", data.name)
+            .single();
 
-          if (defaultError) throw defaultError;
           strengthsData = defaultData;
         }
 
@@ -393,47 +424,54 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
         let { data: analystData, error } = await client
           .from("company")
           .select(
-            "analystRating,numberOfAnalysts,meanTargetPrice,impliedChange"
+            "analystRating,analystRatingDsc,numberOfAnalysts,numberOfAnalystsDsc,meanTargetPrice,meanTargetPriceDsc,impliedChange,impliedChangeDsc"
           )
-          .eq("name", `${userId}-${data.name}`);
+          .eq("name", `${userId}-${data.name}`)
+          .single();
 
         if (!analystData) {
           const { data: defaultData, error } = await client
             .from("company")
             .select(
-              "analystRating,numberOfAnalysts,meanTargetPrice,impliedChange"
+              "analystRating,analystRatingDsc,numberOfAnalysts,numberOfAnalystsDsc,meanTargetPrice,meanTargetPriceDsc,impliedChange,impliedChangeDsc"
             )
-            .eq("name", data.name);
+            .eq("name", data.name)
+            .single();
 
           analystData = defaultData;
         }
 
-        if (error) throw error;
-
+        console.log(cachedData.impliedChange);
         const analystInfo = [
           {
             label: "Analyst Rating (1-5)",
-            value: cachedData.analystRating,
+            value: analystData?.analystRating || cachedData.analystRating,
             name: "analystRating",
-            description: analystData?.analystRating,
+            description: analystData?.analystRatingDsc,
           },
           {
             label: "Number of Analysts",
-            value: cachedData.numberOfAnalysts,
+            value: analystData?.numberOfAnalysts || cachedData.numberOfAnalysts,
             name: "numberOfAnalysts",
-            description: analystData?.numberOfAnalysts,
+            description: analystData?.numberOfAnalystsDsc,
           },
           {
             label: "Mean Target Price",
-            value: "$" + cachedData.meanTargetPrice,
+            value:
+              "$" +
+              roundAndConvert(
+                analystData?.meanTargetPrice || cachedData.meanTargetPrice
+              ),
             name: "meanTargetPrice",
-            description: analystData?.meanTargetPrice,
+            description: analystData?.meanTargetPriceDsc,
           },
           {
             label: "Implied +/-",
-            value: cachedData.impliedChange,
+            value: roundAndConvert(
+              analystData?.impliedChange || cachedData.impliedChange
+            ),
             name: "impliedChange",
-            description: analystData?.impliedChange,
+            description: analystData?.impliedChangeDsc,
           },
         ];
 
@@ -470,15 +508,16 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
         let { data: risksData, error } = await client
           .from("company")
           .select("risksAndMitigation")
-          .eq("name", `${userId}-${data.name}`);
+          .eq("name", `${userId}-${data.name}`)
+          .single();
 
         if (!risksData) {
           const { data: defaultData, error: defaultError } = await client
             .from("company")
             .select("risksAndMitigation")
-            .eq("name", data.name);
+            .eq("name", data.name)
+            .single();
 
-          if (defaultError) throw defaultError;
           risksData = defaultData;
         }
 
@@ -508,23 +547,29 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
   }, [cachedData, client, data.name, userId]);
 
   const fetchConclusion = useCallback(async () => {
+    const promptData = {
+      ...cachedData,
+      url1: "",
+      url2: "",
+    };
+
     if (cachedData && client) {
       try {
         let { data: conclusionData, error } = await client
           .from("company")
           .select("conclusion")
-          .eq("name", `${userId}-${data.name}`);
+          .eq("name", `${userId}-${data.name}`)
+          .single();
 
         if (!conclusionData) {
           const { data: defaultData, error } = await client
             .from("company")
             .select("conclusion")
-            .eq("name", data.name);
+            .eq("name", data.name)
+            .single();
 
           conclusionData = defaultData;
         }
-
-        if (error) throw error;
 
         if (conclusionData && conclusionData.conclusion) {
           setConclusion(conclusionData.conclusion);
@@ -535,7 +580,7 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
         } else {
           const conclusionText = await dsc(
             `With this info ${JSON.stringify(
-              cachedData
+              promptData
             )} give a 70-100 words conclusion which include should we buy it or not?.`
           );
           setConclusion(conclusionText);
@@ -548,7 +593,7 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
         console.error("Error fetching conclusion:", error);
         const conclusionText = await dsc(
           `With this info ${JSON.stringify(
-            cachedData
+            promptData
           )} give a 70-100 words conclusion which include should we buy it or not?.`
         );
         setConclusion(conclusionText);
@@ -567,9 +612,9 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
     try {
       console.log(editedVals.description);
       const updatedData: TableType = {
-        ticker: id,
         ...dataSave,
         ...editedVals,
+        ticker: id,
         conclusion: editedVals?.conclusion || conclusion,
         description: editedVals?.description || companyDescription,
         name: `${userId}-${data.name}`,
@@ -600,58 +645,71 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
     }
   }
 
-  async function savePoints(section: string, content: string): Promise<void> {
+  async function savePointsStgh(
+    section: string,
+    content: string
+  ): Promise<void> {
     setIsSaving(true);
     try {
-      const arr = section.split("-");
-      const col = arr[0];
-      const type = arr[1];
-      const index = arr[2];
-
-      const oldData = {
-        ...data,
-      };
-      const oldVal: string = oldData[col];
-      let newVal: string;
-
-      if (type == "title") {
-        newVal =
-          oldVal.slice(0, oldVal.indexOf(index) + 2) +
-          content +
-          oldVal.slice(oldVal.indexOf(":", oldVal.indexOf(index) + 2));
-      } else if (type == "description") {
-        if (Number(index) < 6)
-          newVal =
-            oldVal.slice(
-              0,
-              oldVal.indexOf(":", oldVal.indexOf(index) + 2) + 1
-            ) +
-            content +
-            oldVal.slice(oldVal.indexOf((Number(index) + 1).toString()) - 1);
-        else
-          newVal =
-            oldVal.slice(
-              0,
-              oldVal.indexOf(":", oldVal.indexOf(index) + 2) + 1
-            ) + content;
-      }
-
-      const updatedData = {
-        ticker: id,
-        ...data,
-        [col]: newVal,
-      };
-
       if (client) {
-        const { data: serverData, error } = await client
-          .from("company")
-          .upsert(updatedData)
-          .select();
+        const arr = section.split("-");
+        const col = arr[0];
+        const type = arr[1];
+        const index = arr[2];
 
-        if (error) {
-          throw error;
+        const { data: oldData, error } = await client
+          .from("company")
+          .select("strengthsAndCatalysts")
+          .eq("name", data.name)
+          .single();
+
+        const oldVal = oldData?.strengthsAndCatalysts;
+        let newVal: string;
+
+        if (type === "title") {
+          newVal =
+            oldVal.slice(0, oldVal.indexOf(index) + 2) +
+            content +
+            oldVal.slice(oldVal.indexOf(":", oldVal.indexOf(index) + 2));
+        } else if (type === "description") {
+          if (Number(index) < 6) {
+            newVal =
+              oldVal.slice(
+                0,
+                oldVal.indexOf(":", oldVal.indexOf(index) + 2) + 1
+              ) +
+              content +
+              oldVal.slice(oldVal.indexOf((Number(index) + 1).toString()) - 1);
+          } else {
+            newVal =
+              oldVal.slice(
+                0,
+                oldVal.indexOf(":", oldVal.indexOf(index) + 2) + 1
+              ) + content;
+          }
         }
-        setCachedData(updatedData);
+
+        console.log(oldVal, col);
+        console.log(newVal);
+        const updatedData = {
+          ...data,
+          ticker: id,
+          [col]: newVal,
+        };
+
+        if (client) {
+          const { data: serverData, error } = await client
+            .from("company")
+            .upsert(updatedData)
+            .eq("name", data.name)
+            .select();
+
+          if (error) {
+            throw error;
+          }
+
+          setCachedData(updatedData);
+        }
       }
     } catch (error) {
       console.error("Error saving points:", error);
@@ -659,6 +717,110 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
       setIsSaving(false);
     }
   }
+
+  async function savePointsRsk(
+    section: string,
+    content: string
+  ): Promise<void> {
+    setIsSaving(true);
+    try {
+      if (client) {
+        const arr = section.split("-");
+        const col = arr[0];
+        const type = arr[1];
+        const index = arr[2];
+
+        const { data: oldData, error } = await client
+          .from("company")
+          .select("risksAndMitigation")
+          .eq("name", data.name)
+          .single();
+
+        console.log(oldData);
+        const oldVal = oldData?.risksAndMitigation;
+        console.log(oldVal, col);
+        let newVal: string;
+
+        if (type === "title") {
+          newVal =
+            oldVal.slice(0, oldVal.indexOf(index) + 2) +
+            content +
+            oldVal.slice(oldVal.indexOf(":", oldVal.indexOf(index) + 2));
+        } else if (type === "description") {
+          if (Number(index) < 6) {
+            newVal =
+              oldVal.slice(
+                0,
+                oldVal.indexOf(":", oldVal.indexOf(index) + 2) + 1
+              ) +
+              content +
+              oldVal.slice(oldVal.indexOf((Number(index) + 1).toString()) - 1);
+          } else {
+            newVal =
+              oldVal.slice(
+                0,
+                oldVal.indexOf(":", oldVal.indexOf(index) + 2) + 1
+              ) + content;
+          }
+        }
+
+        console.log(newVal);
+        const updatedData = {
+          ...data,
+          ticker: id,
+          risksAndMitigation: newVal,
+        };
+
+        if (client) {
+          const { data: serverData, error } = await client
+            .from("company")
+            .upsert(updatedData)
+            .eq("name", data.name)
+            .select();
+
+          if (error) {
+            throw error;
+          }
+
+          setCachedData(updatedData);
+        }
+      }
+    } catch (error) {
+      console.error("Error saving points:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  const defaultSave = async () => {
+    if (client) {
+      const { data: prev, error } = await client
+        .from("company")
+        .select("*")
+        .eq("ticker", id)
+        .single();
+
+      if (
+        !prev &&
+        companyDescription &&
+        conclusion &&
+        strengthsAndCatalysts &&
+        risksAndMitigations
+      ) {
+        const defaultData = {
+          ...data,
+          ticker: id,
+          strengthsAndCatalysts: parsePointsToString(strengthsAndCatalysts),
+          risksAndMitigation: parsePointsToString(risksAndMitigations),
+          description: companyDescription,
+          conclusion: conclusion,
+        };
+        console.log(defaultData);
+        const res = await client?.from("company").insert(defaultData).select();
+        console.log(res);
+      }
+    }
+  };
 
   // async function savePoints(section: string, content: string): Promise<void> {
   //   setIsSaving(true);
@@ -709,6 +871,23 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
   //   return lines.join("\n");
   // }
 
+  async function dsc(_prompt: string) {
+    if (calls < 30) {
+      const data = { prompt: _prompt };
+      const res = await fetch("/api/prompt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const response = await res.text();
+      const obj = JSON.parse(response);
+      setCalls(calls + 1);
+      return obj.response;
+    }
+  }
+
   useEffect(() => {
     if (cachedData) {
       fetchCompanyOverview();
@@ -741,7 +920,21 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
   return (
     <div className="m-0 p-0">
       {isSaving && <LoadingOverlay />}
-      <ShareButton userId={userId} id={id} />
+      <ShareButton userId={userId} id={data.name} />
+      <Refresh
+        onClick={async () => {
+          if (client) {
+            const { error } = await client
+              .from("company")
+              .delete()
+              .eq("name", "-" + data.name);
+            console.log(error);
+          }
+
+          router.refresh();
+          setCachedData(null);
+        }}
+      />
 
       <div className="absolute right-0 top-0 -mt-8">
         <SaveButton onClick={saveEditedContent} />
@@ -792,7 +985,7 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
           <StrengthsAndCatalysts
             hasChanged={hasChanged}
             setHasChanged={setHasChanged}
-            savePoints={savePoints}
+            savePoints={savePointsStgh}
             strengths={strengthsAndCatalysts}
           />
         )}
@@ -814,7 +1007,7 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
           <RisksAnalysis
             hasChanged={hasChanged}
             setHasChanged={setHasChanged}
-            savePoints={savePoints}
+            savePoints={savePointsRsk}
             points={risksAndMitigations}
           />
         )}
@@ -1047,7 +1240,7 @@ function StrengthsAndCatalysts({
                       initialText={strength.title}
                       onSave={(newText) =>
                         savePoints(
-                          `strengthsAndCatalysts-title-${index}`,
+                          `strengthsAndCatalysts-title-${index + 1}`,
                           newText
                         )
                       }
@@ -1060,7 +1253,7 @@ function StrengthsAndCatalysts({
                     initialText={strength.description}
                     onSave={(newText) =>
                       savePoints(
-                        `strengthsAndCatalysts-description-${index}`,
+                        `strengthsAndCatalysts-description-${index + 1}`,
                         newText
                       )
                     }
@@ -1173,47 +1366,25 @@ function RisksAnalysis({
                       initialText={point.title}
                       onSave={(newText) =>
                         savePoints(
-                          `risksAndMitigations-title-${index}`,
+                          `risksAndMitigations-title-${index + 1}`,
                           newText
                         )
                       }
                       className="text-lg font-semibold text-white"
                     />
                   </CardTitle>
-                  {point.description.split("Mitigation:").map((part, i) => (
-                    <React.Fragment key={i}>
-                      {i === 0 ? (
-                        <EditableText
-                          hasChanged={hasChanged}
-                          setHasChanged={setHasChanged}
-                          initialText={part}
-                          onSave={(newText) =>
-                            savePoints(
-                              `risksAndMitigations-description-${index}-risk`,
-                              newText
-                            )
-                          }
-                          className="text-sm text-gray-300 mt-2"
-                        />
-                      ) : (
-                        <>
-                          <EditableText
-                            hasChanged={hasChanged}
-                            setHasChanged={setHasChanged}
-                            initialText={part}
-                            onSave={(newText) =>
-                              savePoints(
-                                `risksAndMitigations-description-${index}-mitigation`,
-                                newText
-                              )
-                            }
-                            className="text-sm text-gray-300 mt-2"
-                            mitigation={true}
-                          />
-                        </>
-                      )}
-                    </React.Fragment>
-                  ))}
+                  <EditableText
+                    hasChanged={hasChanged}
+                    setHasChanged={setHasChanged}
+                    initialText={point.description}
+                    onSave={(newText) =>
+                      savePoints(
+                        `risksAndMitigations-description-${index + 1}-risk`,
+                        newText
+                      )
+                    }
+                    className="text-sm text-gray-300 mt-2"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -1285,20 +1456,6 @@ function Conclusion({
   );
 }
 
-async function dsc(_prompt: string) {
-  const data = { prompt: _prompt };
-  const res = await fetch("/api/prompt", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-  const response = await res.text();
-  const obj = JSON.parse(response);
-  return obj.response;
-}
-
 function parsePoints(text: string): Strength[] {
   const strengths: Strength[] = [];
   const parts = text.split(/\d+\./).slice(1);
@@ -1368,20 +1525,13 @@ export function ShareButton({ id, userId }: { id: string; userId: string }) {
       {isToastVisible && (
         <Toast
           viewLink={`https://stock-gen.vercel.app/viewOnlyPpt/${userId}/${id}`}
-          editableLink={`https://stock-gen.vercel.app/pptDisplay/${id}`}
         />
       )}
     </div>
   );
 }
 
-export function Toast({
-  viewLink,
-  editableLink,
-}: {
-  viewLink: string;
-  editableLink: string;
-}) {
+export function Toast({ viewLink }: { viewLink: string }) {
   const [viewCopied, setViewCopied] = useState(false);
   const [editableCopied, setEditableCopied] = useState(false);
   const viewLinkRef = useRef<HTMLParagraphElement>(null);
@@ -1404,7 +1554,6 @@ export function Toast({
     <div className="z-[100] absolute top-16 right-0 bg-slate-800 text-white p-4 rounded-lg shadow-lg w-72">
       <h3 className="text-2xl font-semibold mb-3">Share Links</h3>
       <div className="space-y-3">
-        <div>Viewable Only:</div>
         <div className="flex items-center justify-between bg-slate-700 rounded p-2">
           <div className="flex items-center space-x-2 flex-1 min-w-0">
             <Link className="w-4 h-4 flex-shrink-0" />
@@ -1418,26 +1567,6 @@ export function Toast({
             aria-label="Copy view link"
           >
             {viewCopied ? (
-              <Check className="w-4 h-4 text-green-400" />
-            ) : (
-              <Copy className="w-4 h-4" />
-            )}
-          </button>
-        </div>
-        <div>Editable:</div>
-        <div className="flex items-center justify-between bg-slate-700 rounded p-2">
-          <div className="flex items-center space-x-2 flex-1 min-w-0">
-            <Code className="w-4 h-4 flex-shrink-0" />
-            <p ref={editableLinkRef} className="truncate text-sm">
-              {editableLink}
-            </p>
-          </div>
-          <button
-            onClick={() => copyToClipboard(editableLink, setEditableCopied)}
-            className="ml-2 p-1 hover:bg-slate-600 rounded transition-colors duration-200"
-            aria-label="Copy editable link"
-          >
-            {editableCopied ? (
               <Check className="w-4 h-4 text-green-400" />
             ) : (
               <Copy className="w-4 h-4" />
@@ -1458,4 +1587,35 @@ function LoadingOverlay() {
       </div>
     </div>
   );
+}
+function roundAndConvert(input: string) {
+  const regex = /^-?([\d.]+)([%a-zA-Z]*)$/;
+  const match = input.match(regex);
+
+  if (!match) {
+    throw new Error("Invalid input format");
+  }
+
+  const numberPart = parseFloat(match[1]);
+  const unit = match[2];
+
+  const roundedNumber = Math.round(numberPart * 10) / 10;
+
+  if (unit) {
+    return `${roundedNumber}${unit}`;
+  }
+
+  return `${roundedNumber}`;
+}
+
+function parsePointsToString(obj: Strength[]) {
+  let str = "";
+
+  obj.map((val, i) => {
+    let s =
+      (i + 1).toString() + ". " + val.title + ": " + val.description + "\n";
+    str += s;
+  });
+
+  return str;
 }
