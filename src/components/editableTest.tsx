@@ -1,9 +1,10 @@
-import React, {
+import type React from "react";
+import {
   useState,
   useEffect,
   useRef,
-  SetStateAction,
-  Dispatch,
+  type SetStateAction,
+  type Dispatch,
 } from "react";
 
 interface EditableTextProps {
@@ -34,10 +35,17 @@ export function EditableText({
       if (cursorPositionRef.current !== null) {
         const range = document.createRange();
         const sel = window.getSelection();
-        range.setStart(
-          textRef.current.childNodes[0] || textRef.current,
-          cursorPositionRef.current
-        );
+        if (textRef.current.childNodes.length > 0) {
+          range.setStart(
+            textRef.current.childNodes[0] || textRef.current,
+            Math.min(
+              cursorPositionRef.current,
+              textRef.current.textContent?.length || 0
+            )
+          );
+        } else {
+          range.setStart(textRef.current, 0);
+        }
         range.collapse(true);
         sel?.removeAllRanges();
         sel?.addRange(range);
@@ -85,10 +93,8 @@ export function EditableText({
         onInput={handleInput}
         suppressContentEditableWarning={true}
       >
-        {mitigation ? (
+        {mitigation && (
           <span className="font-bold text-white">Mitigation: </span>
-        ) : (
-          <></>
         )}
         {text}
       </div>
