@@ -41,12 +41,12 @@ export default function Page() {
         const { data: url1, error: err1 } = await supabase
           .from("company")
           .select("url1")
-          .eq("ticker", id)
+          .eq("name", data.name)
           .single();
         const { data: url2, error: err2 } = await supabase
           .from("company")
           .select("url2")
-          .eq("ticker", id)
+          .eq("name", data.name)
           .single();
 
         console.log(url1, url2);
