@@ -24,7 +24,7 @@ export default function Page() {
       let { data, error } = await supabase
         .from("company")
         .select("*")
-        .eq("name", `${user}-${id}`)
+        .eq("name", `${user}-${extractName(id)}`)
         .single();
       console.log(data);
       if (data) {
@@ -49,4 +49,10 @@ export default function Page() {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return <StockDataDisplay data={stockData} id={id} />;
+}
+
+function extractName(input: string) {
+  if (!input) return "";
+  const parts = input.split("-");
+  return parts.length > 1 ? parts[1].trim() : input.trim();
 }
