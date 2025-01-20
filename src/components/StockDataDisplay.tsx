@@ -6,12 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { StockData } from "../app/types/StockData";
+import type { StockData, TableType } from "../app/types/StockData";
 import Loading from "@/components/fancy-dark-loading";
 import { Share } from "lucide-react";
 
 interface StockDataDisplayProps {
-  data: StockData;
+  data: TableType;
 }
 
 interface Strength {
@@ -20,7 +20,7 @@ interface Strength {
 }
 
 export function StockDataDisplay({ data }: StockDataDisplayProps) {
-  const [cachedData, setCachedData] = useState<StockData | null>(null);
+  const [cachedData, setCachedData] = useState<TableType | null>(null);
   const [companyDescription, setCompanyDescription] = useState<string>("");
   const [imageSrc, setImageSrc] = useState<string>(
     "https://images.unsplash.com/photo-1456930266018-fda42f7404a7?q=80&w=1595&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -29,16 +29,16 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
     "https://images.unsplash.com/photo-1456930266018-fda42f7404a7?q=80&w=1595&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   );
   const [keyMetrics, setKeyMetrics] = useState<
-    Array<{ label: string; value: string | number; description: string }>
+    Array<{ label: string; value: string | number; description?: string }>
   >([]);
   const [financialHealth, setFinancialHealth] = useState<
-    Array<{ label: string; value: string | number; description: string }>
+    Array<{ label: string; value: string | number; description?: string }>
   >([]);
   const [strengthsAndCatalysts, setStrengthsAndCatalysts] = useState<
     Strength[]
   >([]);
   const [analystHealth, setAnalystHealth] = useState<
-    Array<{ label: string; value: string | number; description: string }>
+    Array<{ label: string; value: string | number; description?: string }>
   >([]);
   const [risksAndMitigations, setRisksAndMitigations] = useState<Strength[]>(
     []
@@ -61,72 +61,48 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
   }, [data, cachedData]);
 
   const fetchCompanyOverview = useCallback(async () => {
-    if (cachedData) {
-      if (data.url1) {
-        setImageSrc(data.url1);
-      } else {
-        setImageSrc(
-          "https://images.unsplash.com/photo-1456930266018-fda42f7404a7?q=80&w=1595&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        );
-      }
-      const desc = await dsc(
-        `Give ${cachedData.name} company's description in 50-70 words`
-      );
-      setCompanyDescription(desc);
-      setLoadingStates((prev) => ({ ...prev, companyOverview: false }));
-    }
+    if (data.url1) setImageSrc(data.url1);
+    setCompanyDescription(data.description);
+    setLoadingStates((prev) => ({ ...prev, companyOverview: false }));
   }, [cachedData]);
 
   const fetchKeyMetrics = useCallback(async () => {
     if (cachedData) {
       try {
-        const promptMap = new Map([
-          [
-            "Market Cap",
-            `Summarize _ market cap of ${cachedData.name} and how it benefits or disadvantaging the perception of the stock and don't specify the numbers (in less than 20 words).`,
-          ],
-          [
-            "Shares Outstanding",
-            `Summarize ${cachedData.name}'s shares outstanding value and why it's good or bad and don't specify the numbers(in less than 20 words).`,
-          ],
-          [
-            "Shares Float",
-            `Summarize ${cachedData.name} stock's shares float value and why it's good or bad compared to _ peer group and don't specify the numbers (in less than 20 words).`,
-          ],
-          [
-            "EV/EBITDA",
-            `Summarize if ${cachedData.name} EV/EBITDA ratio is high or low. Discuss the implications of this and don't specify the numbers (in less than 20 words) `,
-          ],
-          [
-            "P/E",
-            `Summarize ${cachedData.name} P/E value and how it compares to ${cachedData.name} peer group and don't specify the numbers. (in less than 20 words) `,
-          ],
-          [
-            "Dividend Rate",
-            `Summarize ${cachedData.name} Dividend Yield and how it compares to ${cachedData.name} peer group and don't specify the numbers. (in less than 20 words)`,
-          ],
-        ]);
-
         const metricsData = [
-          { label: "Market Cap", value: "$" + cachedData.marketCap },
+          {
+            label: "Market Cap",
+            value: "$" + cachedData.marketCap,
+            description: data.marketCapDsc,
+          },
           {
             label: "Shares Outstanding",
             value: cachedData.sharesOutstanding,
+            description: data.marketCapDsc,
           },
-          { label: "Shares Float", value: cachedData.float },
-          { label: "EV/EBITDA", value: cachedData.evEbitda + "x" },
-          { label: "P/E", value: cachedData.peTtm + "x" },
-          { label: "Dividend Rate", value: "$" + cachedData.dividendRate },
+          {
+            label: "Shares Float",
+            value: cachedData.float,
+            description: data.floatDsc,
+          },
+          {
+            label: "EV/EBITDA",
+            value: cachedData.evEbitda + "x",
+            description: data.evEbitdaDsc,
+          },
+          {
+            label: "P/E",
+            value: cachedData.peTtm + "x",
+            description: data.peTtmDsc,
+          },
+          {
+            label: "Dividend Rate",
+            value: "$" + cachedData.dividendRate,
+            description: data.dividendRateDsc,
+          },
         ];
 
-        const metricsWithDescriptions = await Promise.all(
-          metricsData.map(async (metric) => ({
-            ...metric,
-            description: await dsc(promptMap.get(metric.label) || ""),
-          }))
-        );
-
-        setKeyMetrics(metricsWithDescriptions);
+        setKeyMetrics(metricsData);
       } catch (error) {
         console.error("Error fetching key metrics:", error);
         setKeyMetrics([]);
@@ -139,33 +115,36 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
   const fetchFinancialHealth = useCallback(async () => {
     if (cachedData) {
       const financialsData = [
-        { label: "Cash Position", value: "$" + cachedData.cashPosition },
-        { label: "Total Debt", value: "$" + cachedData.totalDebt },
-        { label: "Debt to Equity", value: cachedData.debtToEquity + "x" },
-        { label: "Current Ratio", value: cachedData.currentRatio + "x" },
+        {
+          label: "Cash Position",
+          value: "$" + cachedData.cashPosition,
+          description: data.cashPositionDsc,
+        },
+        {
+          label: "Total Debt",
+          value: "$" + cachedData.totalDebt,
+          description: data.totalDebtDsc,
+        },
+        {
+          label: "Debt to Equity",
+          value: cachedData.debtToEquity + "x",
+          description: data.debtToEquityDsc,
+        },
+        {
+          label: "Current Ratio",
+          value: cachedData.currentRatio + "x",
+          description: data.currentRatioDsc,
+        },
       ];
 
-      const financialsWithDescriptions = await Promise.all(
-        financialsData.map(async (item) => ({
-          ...item,
-          description: await dsc(
-            `summary of ${item.label} of ${cachedData.name} in 20-30 words without the numbers`
-          ),
-        }))
-      );
-
-      setFinancialHealth(financialsWithDescriptions);
+      setFinancialHealth(financialsData);
       setLoadingStates((prev) => ({ ...prev, financialHealth: false }));
     }
   }, [cachedData]);
 
   const fetchStrengthsAndCatalysts = useCallback(async () => {
     if (cachedData) {
-      const strengthsData = await dsc(
-        `Give me growth catalysts of ${cachedData.name} stock, give me 6 points,with headings, and description not more than 40 words`
-      );
-      console.log(strengthsData);
-      setStrengthsAndCatalysts(parsePoints(strengthsData));
+      setStrengthsAndCatalysts(parsePoints(data.strengthsAndCatalysts));
       setLoadingStates((prev) => ({ ...prev, strengthsAndCatalysts: false }));
     }
   }, [cachedData]);
@@ -173,49 +152,42 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
   const fetchAnalystHealth = useCallback(async () => {
     if (cachedData) {
       const analystInfo = [
-        { label: "Analyst Rating (1-5)", value: cachedData.analystRating },
-        { label: "Number of Analysts", value: cachedData.numberOfAnalysts },
-        { label: "Mean Target Price", value: "$" + cachedData.meanTargetPrice },
-        { label: "Implied +/-", value: cachedData.impliedChange },
+        {
+          label: "Analyst Rating (1-5)",
+          value: cachedData.analystRating,
+          description: cachedData.analystRatingDsc,
+        },
+        {
+          label: "Number of Analysts",
+          value: cachedData.numberOfAnalysts,
+          description: cachedData.numberOfAnalystsDsc,
+        },
+        {
+          label: "Mean Target Price",
+          value: "$" + cachedData.meanTargetPrice,
+          description: cachedData.meanTargetPriceDsc,
+        },
+        {
+          label: "Implied +/-",
+          value: cachedData.impliedChange,
+          description: cachedData.impliedChangeDsc,
+        },
       ];
 
-      const analystDataWithDescriptions = await Promise.all(
-        analystInfo.map(async (item) => ({
-          ...item,
-          description: await dsc(
-            `summary of ${item.label} of ${cachedData.name} in 20-30 words without the numbers`
-          ),
-        }))
-      );
-
-      setAnalystHealth(analystDataWithDescriptions);
+      setAnalystHealth(analystInfo);
       setLoadingStates((prev) => ({ ...prev, analystHealth: false }));
     }
   }, [cachedData]);
 
   const fetchRisksAndMitigations = useCallback(async () => {
-    if (cachedData) {
-      const risksData = await dsc(
-        `Give me 6 Risks with explanation and also their mitigations respectively of ${cachedData.name} stock with headings and description of not more than 20 words for each`
-      );
-      console.log(risksData);
-      setRisksAndMitigations(parseRisksAndMitigations(risksData));
-      setLoadingStates((prev) => ({ ...prev, risksAndMitigations: false }));
-    }
+    setLoadingStates((prev) => ({ ...prev, risksAndMitigations: false }));
+    setRisksAndMitigations(parseRisksAndMitigations(data.risksAndMitigation));
   }, [cachedData]);
 
   const fetchConclusion = useCallback(async () => {
-    if (cachedData) {
-      const conclusionData = await dsc(
-        `With this info ${JSON.stringify(
-          cachedData
-        )} give a 70-100 words conclusion which include should we buy it or not?.`
-      );
-
-      if (data.url2) setImageSrc2(data.url2);
-      setConclusion(conclusionData);
-      setLoadingStates((prev) => ({ ...prev, conclusion: false }));
-    }
+    if (data.url2) setImageSrc2(data.url2);
+    setLoadingStates((prev) => ({ ...prev, conclusion: false }));
+    setConclusion(data.conclusion);
   }, [cachedData]);
 
   useEffect(() => {
@@ -332,7 +304,7 @@ function KeyMetrics({
   metrics: Array<{
     label: string;
     value: string | number;
-    description: string;
+    description?: string;
   }>;
 }) {
   return (
@@ -364,7 +336,7 @@ function FinancialHealth({
   financials: Array<{
     label: string;
     value: string | number;
-    description: string;
+    description?: string;
   }>;
 }) {
   return (
@@ -430,7 +402,7 @@ function AnalystHealth({
   analystData: Array<{
     label: string;
     value: string | number;
-    description: string;
+    description?: string;
   }>;
 }) {
   return (
@@ -513,6 +485,7 @@ function Conclusion({
   imageSrc: string;
   rec: string;
 }) {
+  console.log(description);
   return (
     <Card className="flex w-[80vw] h-[75vh] bg-zinc-900 shadow-2xl shadow-cyan-400 text-gray-100 border-0">
       <CardHeader className="w-1/3 p-0 relative overflow-hidden items-center justify-center">
@@ -554,20 +527,6 @@ function Conclusion({
 //   const response = await res.json();
 //   return response.imageUrl;
 // }
-
-async function dsc(_prompt: string) {
-  const data = { prompt: _prompt };
-  const res = await fetch("/api/prompt", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-  const response = await res.text();
-  const obj = JSON.parse(response);
-  return obj.response;
-}
 
 function parsePoints(text: string): Strength[] {
   const strengths: Strength[] = [];
