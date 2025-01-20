@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { StockData } from "../app/types/StockData";
+import Loading from "@/components/fancy-dark-loading";
 import { Share } from "lucide-react";
 
 interface StockDataDisplayProps {
@@ -239,7 +240,7 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
   ]);
 
   if (!cachedData) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
