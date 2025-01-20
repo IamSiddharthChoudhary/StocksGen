@@ -514,6 +514,10 @@ body {
   bottom: 0;
 }
 
+.left-5 {
+  left: 1.25rem;
+}
+
 .left-\[50\%\] {
   left: 50%;
 }
