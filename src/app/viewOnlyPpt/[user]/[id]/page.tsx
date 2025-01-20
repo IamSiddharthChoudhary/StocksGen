@@ -16,61 +16,29 @@ export default function Page() {
   const id = params.id as string;
 
   useEffect(() => {
-    const loadStockData = async () => {
-      try {
-        setIsLoading(true);
-        const fetchStockData = async (id: string) => {
-          const response = await fetch("/api/stock", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ ticker: id }),
-          });
-          if (!response.ok) {
-            throw new Error("Failed to fetch stock data");
-          }
-          return await response.json();
-        };
-
-        const data: StockData = await fetchStockData(id);
-        console.log(data);
-        setStockData(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load stock data"
-        );
-        console.error("Error loading stock data:", err);
-      }
-    };
     const supabase = createSupabaseClient();
 
     async function data() {
       setIsLoading(true);
-      if (typeof id !== "string") {
-        setError("Invalid stock ticker");
-        setIsLoading(false);
-        return;
-      }
 
       let { data, error } = await supabase
         .from("company")
-        .select(`*`)
-        .eq("ticker", "AAPL")
+        .select("*")
+        .eq("name", `${user}-${id}`)
         .single();
       console.log(data);
-      // console.log(data);
-      // if (data) {
-      //   let d: StockData = data;
-      //   setStockData(d);
-      // } else {
-      //   let { data: stock, error } = await supabase.from("company").select(id);
+      if (data) {
+        let d: StockData = data;
+        setStockData(d);
+      } else {
+        let { data: d, error } = await supabase
+          .from("company")
+          .select("*")
+          .eq("name", `${id}`)
+          .single();
+        setStockData(d);
+      }
 
-      //   if (stock) {
-      //     let d: StockData = stock;
-      //     setStockData(d);
-      //   } else loadStockData();
-      // }
       setIsLoading(false);
     }
 
@@ -79,7 +47,6 @@ export default function Page() {
 
   if (isLoading) return <Loading />;
   if (error) return <div className="text-red-500">{error}</div>;
-  if (!stockData) return <Loading />;
 
   return <StockDataDisplay data={stockData} id={id} />;
 }
