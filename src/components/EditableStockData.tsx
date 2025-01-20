@@ -106,9 +106,9 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
   }, [conclusion, data, id, client, companyDescription]);
 
   useEffect(() => {
-    const divRate = await fetch(
-      `https://api.nasdaq.com/api/quote/${id}/dividends?assetclass=stocks`
-    );
+    // const divRate = await fetch(
+    //   `https://api.nasdaq.com/api/quote/${id}/dividends?assetclass=stocks`
+    // );
 
     if (!cachedData) {
       setCachedData(data);
@@ -617,9 +617,11 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
         ...dataSave,
         ...editedVals,
         ticker: id,
+        strengthsAndCatalysts:
+          editedVals?.strengthsAndCatalysts ||
+          parsePointsToString(strengthsAndCatalysts),
         conclusion: editedVals?.conclusion || conclusion,
         description: editedVals?.description || companyDescription,
-        name: `${userId}-${data.name}`,
       };
 
       if (client) {
@@ -922,14 +924,14 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
   return (
     <div className="m-0 p-0">
       {isSaving && <LoadingOverlay />}
-      <ShareButton userId={userId} id={data.name} />
+      <ShareButton userId={userId} id={id} />
       <Refresh
         onClick={async () => {
           if (client) {
             const { error } = await client
               .from("company")
               .delete()
-              .eq("name", "-" + data.name);
+              .eq("name", data.name);
             console.log(error);
           }
 
@@ -1525,9 +1527,7 @@ export function ShareButton({ id, userId }: { id: string; userId: string }) {
         <Share className="text-white w-6 h-6" />
       </button>
       {isToastVisible && (
-        <Toast
-          viewLink={`https://stock-gen.vercel.app/viewOnlyPpt/${userId}/${id}`}
-        />
+        <Toast viewLink={`https://stock-gen.vercel.app/viewOnlyPpt/${id}`} />
       )}
     </div>
   );
