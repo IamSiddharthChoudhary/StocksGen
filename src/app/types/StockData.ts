@@ -27,6 +27,7 @@ export interface TableType {
   ticker: string;
   name: string;
   description: string;
+  desc: string;
   marketCap: string;
   sharesOutstanding: string;
   float: string;
@@ -37,6 +38,7 @@ export interface TableType {
   totalDebt: string;
   debtToEquity: string;
   currentRatio: string;
+  stghsAndCat: string;
   strengthsAndCatalysts: string;
   analystRating: string;
   numberOfAnalysts: string;
