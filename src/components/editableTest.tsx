@@ -47,6 +47,7 @@ export function EditableText({
           range.setStart(textRef.current, 0);
         }
         range.collapse(true);
+        console.log(range);
         sel?.removeAllRanges();
         sel?.addRange(range);
       }
