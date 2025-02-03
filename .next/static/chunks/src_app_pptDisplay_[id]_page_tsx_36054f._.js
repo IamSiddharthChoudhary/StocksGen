@@ -6,8 +6,8 @@
   "path": "static/chunks/src_app_pptDisplay_[id]_page_tsx_36054f._.js",
   "chunks": [
     "static/chunks/src_33ad65._.js",
-    "static/chunks/node_modules_534685._.js",
-    "static/chunks/node_modules_fdd78a._.js"
+    "static/chunks/node_modules_42d4e3._.js",
+    "static/chunks/node_modules_c6bf53._.js"
   ],
   "source": "dynamic"
 });

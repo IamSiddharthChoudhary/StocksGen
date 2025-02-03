@@ -1,12 +1,6 @@
 {
   "/pptDisplay/[id]/page": "app/pptDisplay/[id]/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js",
-  "/api/ticker/route": "app/api/ticker/route.js",
   "/api/stock/route": "app/api/stock/route.js",
-  "/api/image/route": "app/api/image/route.js",
-  "/api/extractImage/route": "app/api/extractImage/route.js",
-  "/api/prompt/route": "app/api/prompt/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/viewOnlyPpt/[id]/page": "app/viewOnlyPpt/[id]/page.js"
+  "/viewOnlyPpt/[id]/page": "app/viewOnlyPpt/[id]/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js"
 }
