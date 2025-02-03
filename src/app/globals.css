@@ -151,6 +151,12 @@ body {
   font-style: normal;
 }
 
+.barlow {
+  font-family: "Barlow", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 .montserrat {
   font-family: "Montserrat", serif;
   font-optical-sizing: auto;
