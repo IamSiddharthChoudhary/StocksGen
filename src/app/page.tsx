@@ -10,7 +10,11 @@ export default function Home() {
   const interBubbleRef = useRef<HTMLDivElement>(null);
   const [topic, setTopic] = useState<string>("");
   const [typed, setTyped] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [password, setPassword] = useState<string>("");
   const [ticker, setTicker] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
   const [userLogged, setUserLogged] = useState(false);
   const router = useRouter();
 
@@ -97,7 +101,19 @@ export default function Home() {
     }
   };
 
+  const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+
   const handleSubmit = () => {
+    if (password !== adminPassword) {
+      setMessage("Invalid password: You are not ADMIN");
+      setPassword("");
+      setIsLoading(false);
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
+      return;
+    }
+
     if (ticker) {
       router.push(`/pptDisplay/${ticker}`);
     }
@@ -105,7 +121,7 @@ export default function Home() {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push("/login");
+    router.push("/");
   };
 
   return (
@@ -116,34 +132,9 @@ export default function Home() {
             <h1 className="text-4xl font-bold tracking-tight">StockGen</h1>
             <nav>
               {!userLogged ? (
-                <ul className="flex space-x-6">
-                  <li>
-                    <button
-                      className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg text-white font-semibold shadow-md hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-300"
-                      onClick={() => router.push("/signup")}
-                    >
-                      Sign Up
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg text-white font-semibold shadow-md hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-300"
-                      onClick={() => router.push("/login")}
-                    >
-                      Log In
-                    </button>
-                  </li>
-                </ul>
+                <ul className="flex space-x-6"></ul>
               ) : (
                 <ul className="flex space-x-6">
-                  <li>
-                    <button
-                      className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg text-white font-semibold shadow-md hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-300"
-                      onClick={() => router.push("/dashboard")}
-                    >
-                      Dashboard
-                    </button>
-                  </li>
                   <li>
                     <button
                       className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg text-white font-semibold shadow-md hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-300"
@@ -179,6 +170,13 @@ export default function Home() {
               className="flex-grow p-3 text-black rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400"
               placeholder="Enter stock topic"
             />
+            <input
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              className="flex-grow p-3 text-black rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+              placeholder="Enter admin password"
+            />
             <button
               className={`px-6 py-3 ${
                 typed
@@ -186,16 +184,18 @@ export default function Home() {
                   : "bg-slate-600"
               } rounded-lg text-white font-semibold shadow-md hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-300`}
               onClick={handleSubmit}
-              disabled={!typed}
+              disabled={!typed || !password}
             >
               Generate PPT
             </button>
           </div>
+
+          {message && <p className="text-red-500 mt-4">{message}</p>}
         </main>
 
         <footer className="w-full bg-black bg-opacity-20 backdrop-blur-sm py-4">
           <div className="container mx-auto px-4 text-center text-sm">
-            © 2025 pptX. All rights reserved.
+            © 2025 StocksGen. All rights reserved.
           </div>
         </footer>
       </div>
