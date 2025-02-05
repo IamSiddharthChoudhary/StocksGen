@@ -64,6 +64,27 @@ export interface TableType {
   peTtmDsc?: string;
   evEbitdaDsc?: string;
   floatDsc?: string;
+  oneYrDsc?: string;
+  revenue24?: string;
+  ebit24?: string;
+  netProfit24?: string;
+  ebitda24?: string;
+  revenue23?: string;
+  ebit23?: string;
+  netProfit23?: string;
+  ebitda23?: string;
+  revenue22?: string;
+  ebit22?: string;
+  netProfit22?: string;
+  ebitda22?: string;
+  revenue21?: string;
+  ebit21?: string;
+  netProfit21?: string;
+  ebitda21?: string;
+  roi24?: string;
+  roi23?: string;
+  roi22?: string;
+  roi21?: string;
 }
 
 export interface EditedValType {
@@ -104,4 +125,51 @@ export interface EditedValType {
   peTtmDsc?: string;
   evEbitdaDsc?: string;
   floatDsc?: string;
+  oneYrDsc?: string;
+  revenue24?: string;
+  ebit24?: string;
+  netProfit24?: string;
+  ebitda24?: string;
+  revenue23?: string;
+  ebit23?: string;
+  netProfit23?: string;
+  ebitda23?: string;
+  revenue22?: string;
+  ebit22?: string;
+  netProfit22?: string;
+  ebitda22?: string;
+  revenue21?: string;
+  ebit21?: string;
+  netProfit21?: string;
+  ebitda21?: string;
+  roi24?: string;
+  roi23?: string;
+  roi22?: string;
+  roi21?: string;
+}
+
+export interface StockHistory {
+  name: string;
+  dsc?: string;
+  ticker: string;
+  revenue24: string;
+  ebit24: string;
+  netProfit24: string;
+  ebitda24: string;
+  revenue23: string;
+  ebit23: string;
+  netProfit23: string;
+  ebitda23: string;
+  revenue22: string;
+  ebit22: string;
+  netProfit22: string;
+  ebitda22: string;
+  revenue21: string;
+  ebit21: string;
+  netProfit21: string;
+  ebitda21: string;
+  roi24?: string;
+  roi23?: string;
+  roi22?: string;
+  roi21?: string;
 }
