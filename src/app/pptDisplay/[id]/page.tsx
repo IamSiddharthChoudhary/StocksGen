@@ -94,16 +94,16 @@ export default function Page() {
 }
 
 async function getImage(_name: string) {
-  // const data = { stockName: _name };
-  // const res = await fetch("/api/image", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(data),
-  // });
-  // const response = await res.json();
-  // return response.imageUrl;
+  const data = { stockName: _name };
+  const res = await fetch("/api/image", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  const response = await res.json();
+  return response.imageUrl;
   return "https://plus.unsplash.com/premium_photo-1698405316329-fd9c43d7e11c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzN8fG5vcndheXxlbnwwfHwwfHx8MA%3D%3D";
 }
 
