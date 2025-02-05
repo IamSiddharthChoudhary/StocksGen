@@ -6,7 +6,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { StockData, TableType } from "../app/types/StockData";
+import type {
+  StockData,
+  StockHistory,
+  TableType,
+} from "../app/types/StockData";
 import Loading from "@/components/fancy-dark-loading";
 import {
   Banknote,
@@ -65,6 +69,7 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
     analystHealth: true,
     risksAndMitigations: true,
     conclusion: true,
+    history: true,
   });
 
   useEffect(() => {
@@ -192,6 +197,10 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
     }
   }, [cachedData]);
 
+  const fetchFinancialHistory = useCallback(async () => {
+    setLoadingStates((prev) => ({ ...prev, history: false }));
+  }, [cachedData]);
+
   const fetchRisksAndMitigations = useCallback(async () => {
     setLoadingStates((prev) => ({ ...prev, risksAndMitigations: false }));
     setRisksAndMitigations(parseRisksAndMitigations(data.risksAndMitigation));
@@ -205,6 +214,7 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
 
   useEffect(() => {
     if (cachedData) {
+      fetchFinancialHistory();
       fetchCompanyOverview();
       fetchKeyMetrics();
       fetchFinancialHealth();
@@ -215,6 +225,7 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
     }
   }, [
     cachedData,
+    fetchFinancialHistory,
     fetchCompanyOverview,
     fetchKeyMetrics,
     fetchFinancialHealth,
@@ -239,6 +250,12 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
             description={companyDescription}
             imageSrc={imageSrc}
           />
+        )}
+
+        {loadingStates.companyOverview ? (
+          <LoadingCard />
+        ) : (
+          <FinancialSnapshot cacheData={cachedData} />
         )}
         {loadingStates.keyMetrics ? (
           <LoadingCard />
@@ -301,14 +318,14 @@ function CompanyOverview({
             {description}
           </CardDescription>
           <div className="mt-4 sm:mt-6 md:mt-8 flex items-center">
-            <div className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 lg:h-16 lg:w-16 bg-white rounded-full overflow-hidden">
+            <div className="h-10 w-10 md:h-10 md:w-10 bg-white rounded-full overflow-hidden">
               <img
                 className="object-cover w-full h-full"
                 src="data:image/jpeg;base64,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"
                 alt="Adrian Saville"
               />
             </div>
-            <h1 className="montserrat text-lg sm:text-xl md:text-2xl lg:text-3xl ml-3">
+            <h1 className="montserrat text-lg md:text-xl ml-3">
               by Adrian Saville
             </h1>
           </div>
@@ -321,6 +338,108 @@ function CompanyOverview({
           />
         </div>
       </div>
+    </Card>
+  );
+}
+
+function FinancialSnapshot({
+  cacheData,
+}: {
+  cacheData: TableType | undefined;
+}) {
+  const financialData = [
+    {
+      year: 2024,
+      revenue: cacheData?.revenue24,
+      ebit: cacheData?.ebit24,
+      netProfit: cacheData?.netProfit24,
+      ebiTda: cacheData?.ebitda24,
+      roi: cacheData?.roi24,
+    },
+    {
+      year: 2023,
+      revenue: cacheData?.revenue23,
+      ebit: cacheData?.ebit23,
+      netProfit: cacheData?.netProfit23,
+      ebiTda: cacheData?.ebitda23,
+      roi: cacheData?.roi23,
+    },
+    {
+      year: 2022,
+      revenue: cacheData?.revenue22,
+      ebit: cacheData?.ebit22,
+      netProfit: cacheData?.netProfit22,
+      ebiTda: cacheData?.ebitda22,
+      roi: cacheData?.roi22,
+    },
+    {
+      year: 2021,
+      revenue: cacheData?.revenue21,
+      ebit: cacheData?.ebit21,
+      netProfit: cacheData?.netProfit21,
+      ebiTda: cacheData?.ebitda21,
+      roi: cacheData?.roi21,
+    },
+  ];
+
+  let data = cacheData?.dsc;
+  console.log(data);
+  return (
+    <Card className="w-full max-w-[80vw] mx-auto bg-zinc-900 shadow-2xl shadow-cyan-400 text-gray-100 border-0 overflow-hidden">
+      <CardHeader className="p-4 sm:p-6 md:p-8">
+        <CardTitle className="barlow-bold text-2xl sm:text-3xl font-bold text-center">
+          <span className="bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text">
+            Financial Snapshot: Stock's Performance
+          </span>
+        </CardTitle>
+
+        <div className="grid pt-5 lg:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <h2 className="barlow-bold text-xl sm:text-xl font-bold text-center">
+              <span className="bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text">
+                1-Year Stock Price
+              </span>
+            </h2>
+            {data}
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="barlow-bold text-xl sm:text-xl font-bold text-center">
+              <span className="bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text">
+                4-Year Financials
+              </span>
+            </h2>
+            <div className="rounded-lg overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-zinc-800">
+                  <tr>
+                    <th className="text-gray-100 p-2">Year</th>
+                    <th className="text-gray-100 p-2">Revenue ($B)</th>
+                    <th className="text-gray-100 p-2">EBIT ($B)</th>
+                    <th className="text-gray-100 p-2">Net Profit</th>
+                    <th className="text-gray-100 p-2">EBITDA ($B)</th>
+                    <th className="text-gray-100 p-2">ROI (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {financialData.map((row) => (
+                    <tr key={row.year} className="border-zinc-800">
+                      <td className="text-gray-100 p-2">
+                        {row.year.toString()}
+                      </td>
+                      <td className="text-gray-100 p-2">{row.revenue}</td>
+                      <td className="text-gray-100 p-2">{row.ebit}</td>
+                      <td className="text-gray-100 p-2">{row.netProfit}</td>
+                      <td className="text-gray-100 p-2">{row.ebiTda}</td>
+                      <td className="text-gray-100 p-2">{row.roi}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </CardHeader>
     </Card>
   );
 }
@@ -486,7 +605,7 @@ function StrengthsAndCatalysts({ strengths }: { strengths: Strength[] }) {
                       {strength.title}
                     </CardTitle>
                   </div>
-                  <p className="text-sm text-gray-300 mt-2">
+                  <p className="text-base text-gray-300 mt-2">
                     {strength.description}
                   </p>
                 </div>
@@ -511,11 +630,10 @@ function AnalystHealth({
   return (
     <Card className="w-full max-w-[80vw] mx-auto bg-zinc-900 shadow-lg sm:shadow-xl md:shadow-2xl shadow-cyan-400/20 sm:shadow-cyan-400/30 md:shadow-cyan-400/40 text-gray-100 border-0 overflow-hidden">
       <div className="flex flex-col">
-        <div className="w-full h-[20vh] sm:h-[25vh] md:h-[30vh] relative overflow-hidden">
+        <div className="w-full h-[15vh] sm:h-[15vh] md:h-[20vh] relative overflow-hidden">
           <img
             className="object-cover object-bottom w-full h-full"
             src="https://images.pexels.com/photos/7239279/pexels-photo-7239279.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-            alt="Analyst insights visual representation"
           />
         </div>
         <CardHeader className="p-4 sm:p-6 md:p-8 lg:p-10">
@@ -540,28 +658,24 @@ function AnalystHealth({
                       <GradientIcon
                         icon={User}
                         gradientId={`gradient-ah-${index}`}
-                        // className="w-4 h-4 sm:w-5 sm:h-5 mr-1"
                       />
                     )}
                     {item.label === "Analyst Rating (1-5)" && (
                       <GradientIcon
                         icon={Star}
                         gradientId={`gradient-ah-${index}`}
-                        // className="w-4 h-4 sm:w-5 sm:h-5 mr-1"
                       />
                     )}
                     {item.label === "Mean Target Price" && (
                       <GradientIcon
                         icon={Banknote}
                         gradientId={`gradient-ah-${index}`}
-                        // className="w-4 h-4 sm:w-5 sm:h-5 mr-1"
                       />
                     )}
                     {item.label === "Implied +/-" && (
                       <GradientIcon
                         icon={Scale}
                         gradientId={`gradient-ah-${index}`}
-                        // className="w-4 h-4 sm:w-5 sm:h-5 mr-1"
                       />
                     )}
                     {item.label}
@@ -603,7 +717,7 @@ function RisksAnalysis({ points }: { points: Strength[] }) {
                       {point.title}
                     </CardTitle>
                   </div>
-                  <p className="text-sm sm:text-sm text-gray-300 mt-2">
+                  <p className="text-sm sm:text-base text-gray-300 mt-2">
                     {point.description.split("Mitigation:").map((part, i) => (
                       <React.Fragment key={i}>
                         {i === 0 ? (
@@ -659,10 +773,10 @@ function Conclusion({
             {description}
           </p>
           <div className="flex flex-col sm:flex-row items-center mt-4 gap-2">
-            <span className="font-bold text-white barlow-bold text-xl sm:text-2xl">
+            <span className="font-bold text-white barlow text-xl sm:text-2xl">
               Recommendation:
             </span>
-            <p className="montserrat text-lg sm:text-xl lg:text-2xl">{rec}</p>
+            <p className="barlow-bold text-lg sm:text-xl lg:text-2xl">{rec}</p>
           </div>
         </CardHeader>
       </div>
