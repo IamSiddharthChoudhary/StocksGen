@@ -1,23 +1,18 @@
 "use client";
-import React, {
+import type React from "react";
+import {
   useState,
   useEffect,
   useCallback,
   useRef,
-  SetStateAction,
-  Dispatch,
+  type SetStateAction,
+  type Dispatch,
 } from "react";
-import {
-  Card,
-  CardDescription,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type {
   EditedValType,
-  StockData,
   TableType,
+  StockHistory,
 } from "../app/types/StockData";
 import {
   Banknote,
@@ -26,7 +21,6 @@ import {
   Coins,
   Copy,
   Divide,
-  DollarSign,
   Landmark,
   Link,
   Percent,
@@ -38,7 +32,7 @@ import {
   Users,
 } from "lucide-react";
 import { EditableText } from "./editableTest";
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createSupabaseClient } from "@/lib/supaBaseClient";
 import { Loader2 } from "@/components/ui/loader";
 import SaveButton from "./ui/saveButton";
@@ -59,7 +53,7 @@ interface Strength {
 export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
   const [calls, setCalls] = useState(0);
   const [client, setClient] = useState<SupabaseClient | null>(null);
-  const [dataSave, setDataSave] = useState<TableType>(data);
+  const [dataSave, setDataSave] = useState<TableType>();
   const [isSaving, setIsSaving] = useState(false);
   const [cachedData, setCachedData] = useState<TableType | null>(null);
   const [editedVals, setEditedVals] = useState<EditedValType>({});
@@ -112,15 +106,19 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
     analystHealth: true,
     risksAndMitigations: true,
     conclusion: true,
+    history: true,
   });
+  const [history, setHistory] = useState<StockHistory | null>(null);
 
   useEffect(() => {
     setClient(createSupabaseClient());
   }, []);
 
-  useEffect(() => {
-    defaultSave();
-  }, [conclusion, data, id, client, companyDescription]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     defaultSave();
+  //   }, 2000);
+  // }, [conclusion, data, id, client, companyDescription]);
 
   useEffect(() => {
     // const divRate = await fetch(
@@ -131,6 +129,16 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
       setCachedData(data);
     }
   }, [data, cachedData]);
+
+  useEffect(() => {
+    if (cachedData) {
+      const newData: TableType = {
+        ...cachedData,
+        risksAndMitigation: parsePointsToString(risksAndMitigations),
+      };
+      setDataSave(cachedData);
+    }
+  }, [cachedData]);
 
   const fetchCompanyOverview = useCallback(async () => {
     if (cachedData && client) {
@@ -541,14 +549,24 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
         }
 
         if (risksData && risksData.risksAndMitigation) {
-          setRisksAndMitigations(
-            parseRisksAndMitigations(risksData.risksAndMitigation)
+          const parsedRisks = parseRisksAndMitigations(
+            risksData.risksAndMitigation
           );
+          setRisksAndMitigations(parsedRisks);
+          setEditedVals((prev) => ({
+            ...prev,
+            risksAndMitigation: parsePointsToString(parsedRisks),
+          }));
         } else {
           const risksText = await dsc(
             `Give me 6 Risks with explanation and also their mitigations respectively of ${cachedData.name} stock with headings and description of not more than 20 words for each`
           );
-          setRisksAndMitigations(parseRisksAndMitigations(risksText));
+          const parsedRisks = parseRisksAndMitigations(risksText);
+          setRisksAndMitigations(parsedRisks);
+          setEditedVals((prev) => ({
+            ...prev,
+            risksAndMitigation: parsePointsToString(parsedRisks),
+          }));
         }
       } catch (error) {
         console.error("Error fetching risks and mitigations:", error);
@@ -626,6 +644,101 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
     }
   }, [cachedData, client, data.url2]);
 
+  const fetchHistory = useCallback(async () => {
+    if (client && cachedData && !history) {
+      try {
+        setLoadingStates((prev) => ({ ...prev, history: true }));
+
+        const { data: row, error } = await client
+          .from("company")
+          .select(
+            `
+            revenue24,
+            ebit24,
+            netProfit24,
+            ebitda24,
+            roi24,
+            revenue22,
+            ebit22,
+            netProfit22,
+            ebitda22,
+            roi22,
+            revenue23,
+            ebit23,
+            netProfit23,
+            ebitda23,
+            roi23,
+            revenue21,
+            ebit21,
+            netProfit21,
+            ebitda21,
+            roi21,
+            oneYrDsc`
+          )
+          .eq("name", cachedData.name)
+          .single();
+
+        if (error) throw error;
+
+        const req = { symbol: id };
+        const response = await fetch("/api/history", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(req),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const hD: StockHistory = await response.json();
+
+        const obj: StockHistory = {
+          name: cachedData.name,
+          ticker: cachedData.ticker,
+          revenue24: row?.revenue24 || hD.revenue24,
+          ebit24: row?.ebit24 || hD.ebit24,
+          netProfit24: row?.netProfit24 || hD.netProfit24,
+          ebitda24: row?.ebitda24 || hD.ebitda24,
+          roi24: row?.roi24 || hD.roi24,
+          revenue22: row?.revenue22 || hD.revenue22,
+          ebit22: row?.ebit22 || hD.ebit22,
+          netProfit22: row?.netProfit22 || hD.netProfit22,
+          ebitda22: row?.ebitda22 || hD.ebitda22,
+          roi22: row?.roi22 || hD.roi22,
+          revenue23: row?.revenue23 || hD.revenue23,
+          ebit23: row?.ebit23 || hD.ebit23,
+          netProfit23: row?.netProfit23 || hD.netProfit23,
+          ebitda23: row?.ebitda23 || hD.ebitda23,
+          roi23: row?.roi23 || hD.roi23,
+          revenue21: row?.revenue21 || hD.revenue21,
+          ebit21: row?.ebit21 || hD.ebit21,
+          netProfit21: row?.netProfit21 || hD.netProfit21,
+          ebitda21: row?.ebitda21 || hD.ebitda21,
+          roi21: row?.roi21 || hD.roi21,
+          dsc:
+            row?.oneYrDsc ||
+            (await dsc(
+              `Give 2024 stock price summary of ${cachedData.name} in 40 words`
+            )),
+        };
+
+        setHistory(obj);
+        console.log(obj);
+      } catch (error) {
+        console.error("Error fetching history:", error);
+      } finally {
+        setLoadingStates((prev) => ({ ...prev, history: false }));
+      }
+    }
+  }, [cachedData, client, id, history]);
+
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
+
   async function saveEditedContent() {
     setIsSaving(true);
     try {
@@ -637,6 +750,9 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
         strengthsAndCatalysts:
           editedVals?.strengthsAndCatalysts ||
           parsePointsToString(strengthsAndCatalysts),
+        risksAndMitigation:
+          editedVals?.risksAndMitigation ||
+          parsePointsToString(risksAndMitigations),
         conclusion: editedVals?.conclusion || conclusion,
         description: editedVals?.description || companyDescription,
       };
@@ -751,59 +867,28 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
         const type = arr[1];
         const index = arr[2];
 
-        const { data: oldData, error } = await client
-          .from("company")
-          .select("risksAndMitigation")
-          .eq("name", data.name)
-          .single();
-
-        console.log(oldData);
-        const oldVal = oldData?.risksAndMitigation;
-        console.log(oldVal, col);
-        let newVal: string;
-
-        if (type === "title") {
-          newVal =
-            oldVal.slice(0, oldVal.indexOf(index) + 2) +
-            content +
-            oldVal.slice(oldVal.indexOf(":", oldVal.indexOf(index) + 2));
-        } else if (type === "description") {
-          if (Number(index) < 6) {
-            newVal =
-              oldVal.slice(
-                0,
-                oldVal.indexOf(":", oldVal.indexOf(index) + 2) + 1
-              ) +
-              content +
-              oldVal.slice(oldVal.indexOf((Number(index) + 1).toString()) - 1);
-          } else {
-            newVal =
-              oldVal.slice(
-                0,
-                oldVal.indexOf(":", oldVal.indexOf(index) + 2) + 1
-              ) + content;
+        const updatedRisks = risksAndMitigations.map((risk, i) => {
+          if (i === Number(index) - 1) {
+            return { ...risk, [type]: content };
           }
-        }
+          return risk;
+        });
 
-        console.log(newVal);
-        const updatedData = {
-          ...data,
-          ticker: id,
-          risksAndMitigation: newVal,
-        };
+        const newVal = parsePointsToString(updatedRisks);
+
+        setRisksAndMitigations(updatedRisks);
+        setEditedVals((prev) => ({ ...prev, risksAndMitigation: newVal }));
 
         if (client) {
           const { data: serverData, error } = await client
             .from("company")
-            .upsert(updatedData)
+            .update({ risksAndMitigation: newVal })
             .eq("name", data.name)
             .select();
 
           if (error) {
             throw error;
           }
-
-          setCachedData(updatedData);
         }
       }
     } catch (error) {
@@ -813,101 +898,59 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
     }
   }
 
-  const defaultSave = async () => {
-    if (client) {
-      const { data: prev, error } = await client
-        .from("company")
-        .select("*")
-        .eq("ticker", id)
-        .single();
+  // const defaultSave = async () => {
+  //   if (client) {
+  //     const { data: prev, error } = await client
+  //       .from("company")
+  //       .select("*")
+  //       .eq("ticker", id)
+  //       .single();
 
-      if (
-        !prev &&
-        companyDescription &&
-        conclusion &&
-        strengthsAndCatalysts &&
-        risksAndMitigations
-      ) {
-        const defaultData = {
-          ...data,
-          ticker: id,
-          strengthsAndCatalysts: parsePointsToString(strengthsAndCatalysts),
-          risksAndMitigation: parsePointsToString(risksAndMitigations),
-          description: companyDescription,
-          conclusion: conclusion,
-        };
-        console.log(defaultData);
-        const res = await client?.from("company").insert(defaultData).select();
-        console.log(res);
+  //     if (
+  //       !prev &&
+  //       companyDescription &&
+  //       conclusion &&
+  //       strengthsAndCatalysts &&
+  //       risksAndMitigations
+  //     ) {
+  //       const defaultData = {
+  //         ...data,
+  //         ticker: id,
+  //         strengthsAndCatalysts: parsePointsToString(strengthsAndCatalysts),
+  //         risksAndMitigation: parsePointsToString(risksAndMitigations),
+  //         description: companyDescription,
+  //         conclusion: conclusion,
+  //       };
+  //       console.log(defaultData);
+  //       const res = await client?.from("company").insert(defaultData).select();
+  //       console.log(res);
+  //     }
+  //   }
+  // };
+
+  const dsc = useCallback(
+    async (_prompt: string) => {
+      if (calls < 30) {
+        const data = { prompt: _prompt };
+        try {
+          const res = await fetch("/api/prompt", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+          const response = await res.text();
+          const obj = JSON.parse(response);
+          setCalls((prevCalls) => prevCalls + 1);
+          return obj.response;
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
       }
-    }
-  };
-
-  // async function savePoints(section: string, content: string): Promise<void> {
-  //   setIsSaving(true);
-  //   try {
-  //     const [col, type, index] = section.split("-");
-
-  //     const updatedData = {
-  //       ...dataSave,
-  //       [col]: updateNestedStructure(dataSave[col], index, type, content),
-  //     };
-
-  //     if (client) {
-  //       const { data: serverData, error } = await client
-  //         .from("company")
-  //         .upsert({ ticker: id, ...updatedData })
-  //         .select();
-
-  //       if (error) {
-  //         throw error;
-  //       }
-  //       setDataSave(updatedData);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error saving points:", error);
-  //   } finally {
-  //     setIsSaving(false);
-  //   }
-  // }
-  // function updateNestedStructure(
-  //   d: string,
-  //   index: string,
-  //   type: string,
-  //   content: string
-  // ): string {
-  //   const lines = d.split("\n");
-  //   const targetIndex = lines.findIndex((line) => line.startsWith(`${index}:`));
-
-  //   if (targetIndex === -1) return d;
-
-  //   if (type === "title") {
-  //     lines[targetIndex] = `${index}: ${content}`;
-  //   } else if (type === "description") {
-  //     if (targetIndex + 1 < lines.length) {
-  //       lines[targetIndex + 1] = content;
-  //     }
-  //   }
-
-  //   return lines.join("\n");
-  // }
-
-  async function dsc(_prompt: string) {
-    if (calls < 30) {
-      const data = { prompt: _prompt };
-      const res = await fetch("/api/prompt", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      const response = await res.text();
-      const obj = JSON.parse(response);
-      setCalls(calls + 1);
-      return obj.response;
-    }
-  }
+    },
+    [calls]
+  );
 
   useEffect(() => {
     if (cachedData) {
@@ -929,6 +972,10 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
     fetchRisksAndMitigations,
     fetchConclusion,
   ]);
+
+  useEffect(() => {
+    console.log("editedVals updated:", editedVals);
+  }, [editedVals]);
 
   useEffect(() => {
     console.log("editedVals updated:", editedVals);
@@ -974,6 +1021,17 @@ export function StockDataDisplay({ data, id, userId }: StockDataDisplayProps) {
             name={cachedData?.name || ""}
             description={companyDescription}
             imageSrc={imageSrc}
+          />
+        )}
+        {loadingStates.history ? (
+          <LoadingCard />
+        ) : (
+          <FinancialSnapshot
+            cacheData={history}
+            hasChanged={hasChanged}
+            setHasChanged={setHasChanged}
+            setEditedVals={setEditedVals}
+            saveEditedContent={saveEditedContent}
           />
         )}
         {loadingStates.keyMetrics ? (
@@ -1093,7 +1151,6 @@ function CompanyOverview({
             <div className="h-10 w-10 sm:h-12 sm:w-12 md:h-10 md:w-10 lg:h-10 lg:w-10 bg-white rounded-full overflow-hidden">
               <img
                 className="object-cover w-full h-full"
-                src="data:image/jpeg;base64,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"
                 alt="Adrian Saville"
               />
             </div>
@@ -1406,6 +1463,195 @@ function GradientIcon({
   );
 }
 
+function FinancialSnapshot({
+  cacheData,
+  hasChanged,
+  setHasChanged,
+  setEditedVals,
+}: {
+  cacheData: StockHistory | undefined;
+  hasChanged: boolean;
+  setHasChanged: Dispatch<SetStateAction<boolean>>;
+  saveEditedContent: () => void;
+  setEditedVals: Dispatch<SetStateAction<EditedValType>>;
+}) {
+  const financialData = [
+    {
+      year: 2024,
+      revenue: cacheData?.revenue24,
+      ebit: cacheData?.ebit24,
+      netProfit: cacheData?.netProfit24,
+      ebiTda: cacheData?.ebitda24,
+      roi: cacheData?.roi24,
+    },
+    {
+      year: 2023,
+      revenue: cacheData?.revenue23,
+      ebit: cacheData?.ebit23,
+      netProfit: cacheData?.netProfit23,
+      ebiTda: cacheData?.ebitda23,
+      roi: cacheData?.roi23,
+    },
+    {
+      year: 2022,
+      revenue: cacheData?.revenue22,
+      ebit: cacheData?.ebit22,
+      netProfit: cacheData?.netProfit22,
+      ebiTda: cacheData?.ebitda22,
+      roi: cacheData?.roi22,
+    },
+    {
+      year: 2021,
+      revenue: cacheData?.revenue21,
+      ebit: cacheData?.ebit21,
+      netProfit: cacheData?.netProfit21,
+      ebiTda: cacheData?.ebitda21,
+      roi: cacheData?.roi21,
+    },
+  ];
+
+  let data = cacheData?.dsc;
+  console.log(cacheData);
+  return (
+    <Card className="w-full max-w-[80vw] mx-auto bg-zinc-900 shadow-2xl shadow-cyan-400 text-gray-100 border-0 overflow-hidden">
+      <CardHeader className="p-4 sm:p-6 md:p-8">
+        <CardTitle className="barlow-bold text-2xl sm:text-3xl font-bold text-center">
+          <span className="bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text">
+            Financial Snapshot: Stock's Performance
+          </span>
+        </CardTitle>
+
+        <div className="grid pt-5 lg:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <h2 className="barlow-bold text-xl sm:text-xl font-bold text-center">
+              <span className="bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text">
+                1-Year Stock Price
+              </span>
+            </h2>
+            <EditableText
+              hasChanged={hasChanged}
+              setHasChanged={setHasChanged}
+              initialText={cacheData?.dsc}
+              onSave={(newText) => {
+                setEditedVals((prev) => ({
+                  ...prev,
+                  oneYrDsc: newText,
+                }));
+              }}
+              className=""
+            />
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="barlow-bold text-xl sm:text-xl font-bold text-center">
+              <span className="bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text">
+                4-Year Financials
+              </span>
+            </h2>
+            <div className="rounded-lg overflow-x-scroll">
+              <table className="w-full">
+                <thead className="bg-zinc-800">
+                  <tr>
+                    <th className="text-gray-100 p-2">Year</th>
+                    <th className="text-gray-100 p-2">Revenue ($B)</th>
+                    <th className="text-gray-100 p-2">EBIT ($B)</th>
+                    <th className="text-gray-100 p-2">Net Profit</th>
+                    <th className="text-gray-100 p-2">EBITDA ($B)</th>
+                    <th className="text-gray-100 p-2">ROI (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {financialData.map((row) => (
+                    <tr key={row.year} className="border-zinc-800">
+                      <td className="text-gray-100 text-center p-2">
+                        {row.year.toString()}
+                      </td>
+                      <td className="text-gray-100 p-2">
+                        <EditableText
+                          hasChanged={hasChanged}
+                          setHasChanged={setHasChanged}
+                          initialText={row.revenue}
+                          onSave={(newText) => {
+                            setEditedVals((prev) => ({
+                              ...prev,
+                              [`revenue${row.year.toString().slice(2)}`]:
+                                newText,
+                            }));
+                          }}
+                          className="text-center"
+                        />
+                      </td>
+                      <td className="text-gray-100 p-2">
+                        <EditableText
+                          hasChanged={hasChanged}
+                          setHasChanged={setHasChanged}
+                          initialText={row.ebit}
+                          onSave={(newText) => {
+                            setEditedVals((prev) => ({
+                              ...prev,
+                              [`revenue${row.year.toString().slice(2)}`]:
+                                newText,
+                            }));
+                          }}
+                          className="text-center"
+                        />
+                      </td>
+                      <td className="text-gray-100 p-2">
+                        <EditableText
+                          hasChanged={hasChanged}
+                          setHasChanged={setHasChanged}
+                          initialText={row.netProfit}
+                          onSave={(newText) => {
+                            setEditedVals((prev) => ({
+                              ...prev,
+                              [`netProfit${row.year.toString().slice(2)}`]:
+                                newText,
+                            }));
+                          }}
+                          className="text-center"
+                        />
+                      </td>
+                      <td className="text-gray-100 p-2">
+                        <EditableText
+                          hasChanged={hasChanged}
+                          setHasChanged={setHasChanged}
+                          initialText={row.ebiTda}
+                          onSave={(newText) => {
+                            setEditedVals((prev) => ({
+                              ...prev,
+                              [`ebiTda${row.year.toString().slice(2)}`]:
+                                newText,
+                            }));
+                          }}
+                          className="text-center"
+                        />
+                      </td>
+                      <td className="text-gray-100 p-2">
+                        <EditableText
+                          hasChanged={hasChanged}
+                          setHasChanged={setHasChanged}
+                          initialText={row.roi}
+                          onSave={(newText) => {
+                            setEditedVals((prev) => ({
+                              ...prev,
+                              [`roi${row.year.toString().slice(2)}`]: newText,
+                            }));
+                          }}
+                          className="text-center"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </CardHeader>
+    </Card>
+  );
+}
+
 function AnalystHealth({
   hasChanged,
   setHasChanged,
@@ -1560,7 +1806,7 @@ function RisksAnalysis({
                         initialText={point.title}
                         onSave={(newText) =>
                           savePoints(
-                            `risksAndMitigations-title-${index + 1}`,
+                            `risksAndMitigation-${"title"}-${index + 1}`,
                             newText
                           )
                         }
@@ -1574,7 +1820,7 @@ function RisksAnalysis({
                     initialText={point.description}
                     onSave={(newText) =>
                       savePoints(
-                        `risksAndMitigations-description-${index + 1}-risk`,
+                        `risksAndMitigation-${"description"}-${index + 1}`,
                         newText
                       )
                     }
@@ -1792,7 +2038,7 @@ function roundAndConvert(input: string) {
     throw new Error("Invalid input format");
   }
 
-  const numberPart = parseFloat(match[1]);
+  const numberPart = Number.parseFloat(match[1]);
   const unit = match[2];
 
   const roundedNumber = Math.round(numberPart * 10) / 10;
@@ -1808,7 +2054,7 @@ function parsePointsToString(obj: Strength[]) {
   let str = "";
 
   obj.map((val, i) => {
-    let s =
+    const s =
       (i + 1).toString() + ". " + val.title + ": " + val.description + "\n";
     str += s;
   });
