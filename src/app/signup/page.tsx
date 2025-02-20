@@ -80,7 +80,7 @@ export default function SignUp() {
         alert(error.message);
         setIsLoading(false);
       } else {
-        router.push("/");
+        router.push(`/users/${email.slice(email.indexOf("@"))}`);
       }
     }
   };
