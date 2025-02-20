@@ -132,7 +132,20 @@ export default function Home() {
             <h1 className="text-4xl font-bold tracking-tight">StockGen</h1>
             <nav>
               {!userLogged ? (
-                <ul className="flex space-x-6"></ul>
+                <ul className="flex space-x-6">
+                  <button
+                    className={`px-6 py-3 ${"bg-gradient-to-r from-pink-500 to-purple-600"} rounded-lg text-white font-semibold shadow-md hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-300`}
+                    onClick={() => router.push("/login")}
+                  >
+                    Log In
+                  </button>
+                  <button
+                    className={`px-6 py-3 ${"bg-gradient-to-r from-pink-500 to-purple-600"} rounded-lg text-white font-semibold shadow-md hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-300`}
+                    onClick={() => router.push("/signup")}
+                  >
+                    Sign Up
+                  </button>
+                </ul>
               ) : (
                 <ul className="flex space-x-6">
                   <li>
@@ -170,21 +183,9 @@ export default function Home() {
               className="flex-grow p-3 text-black rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400"
               placeholder="Enter stock topic"
             />
-            <input
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-              className="flex-grow p-3 text-black rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400"
-              placeholder="Enter admin password"
-            />
             <button
-              className={`px-6 py-3 ${
-                typed
-                  ? "bg-gradient-to-r from-pink-500 to-purple-600"
-                  : "bg-slate-600"
-              } rounded-lg text-white font-semibold shadow-md hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-300`}
+              className={`px-6 py-3 ${"bg-gradient-to-r from-pink-500 to-purple-600"} rounded-lg text-white font-semibold shadow-md hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-300`}
               onClick={handleSubmit}
-              disabled={!typed || !password}
             >
               Generate PPT
             </button>
