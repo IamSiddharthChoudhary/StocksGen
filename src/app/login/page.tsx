@@ -57,7 +57,7 @@ export default function Login() {
     if (error) {
       alert(`Problem in login: ${error.message}`);
     } else {
-      router.push("/");
+      router.push(`/users/${email.slice(email.indexOf("@"))}`);
     }
   };
 
