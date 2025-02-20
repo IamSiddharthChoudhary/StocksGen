@@ -59,6 +59,18 @@ body {
   align-items: center;
 }
 
+.gradient-back {
+  background: linear-gradient(
+    270deg,
+    rgb(23, 21, 59),
+    rgb(46, 35, 108),
+    rgb(26, 26, 29),
+    rgb(59, 28, 50)
+  );
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
 .login_container {
   background-color: rgba(255, 255, 255, 0.8);
   padding: 20px;
