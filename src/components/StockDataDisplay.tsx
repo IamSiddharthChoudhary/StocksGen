@@ -26,6 +26,8 @@ import {
   User,
   Users,
 } from "lucide-react";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { createSupabaseClient } from "@/lib/supaBaseClient";
 
 interface StockDataDisplayProps {
   data: TableType;
@@ -61,6 +63,7 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
     []
   );
   const [conclusion, setConclusion] = useState<string>("");
+  const [hasImage, setHasImage] = useState<boolean>(false);
   const [loadingStates, setLoadingStates] = useState({
     companyOverview: true,
     keyMetrics: true,
@@ -71,6 +74,30 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
     conclusion: true,
     history: true,
   });
+  const [client, setClient] = useState<SupabaseClient>();
+  const [history, setHistory] = useState<StockHistory>();
+  const [finImage, setFinImage] = useState<string>();
+
+  useEffect(() => {
+    setClient(createSupabaseClient());
+    setLoadingStates((prev) => ({ ...prev, history: true }));
+    const func = async () => {
+      if (client) {
+        const { data: imageData, error } = await client
+          ?.from("images")
+          .select("img")
+          .eq("ticker", data.ticker)
+          .single();
+        if (imageData?.img) {
+          setHasImage(true);
+          setFinImage(imageData.img);
+        }
+      }
+    };
+
+    func();
+    setLoadingStates((prev) => ({ ...prev, history: false }));
+  }, [cachedData]);
 
   useEffect(() => {
     if (!cachedData) {
@@ -198,7 +225,83 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
   }, [cachedData]);
 
   const fetchFinancialHistory = useCallback(async () => {
-    setLoadingStates((prev) => ({ ...prev, history: false }));
+    if (client && cachedData && !history) {
+      try {
+        setLoadingStates((prev) => ({ ...prev, history: true }));
+
+        const { data: row, error } = await client
+          .from("company")
+          .select(
+            `
+              revenue24,
+              ebit24,
+              netProfit24,
+              ebitda24,
+              roi24,
+              revenue22,
+              ebit22,
+              netProfit22,
+              ebitda22,
+              roi22,
+              revenue23,
+              ebit23,
+              netProfit23,
+              ebitda23,
+              roi23,
+              revenue21,
+              ebit21,
+              netProfit21,
+              ebitda21,
+              roi21,
+              oneYrDsc`
+          )
+          .eq("name", cachedData.name)
+          .single();
+
+        const response = await fetch(
+          `/api/financial?ticker=${cachedData.ticker}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const hD: StockHistory = await response.json();
+
+        const obj: StockHistory = {
+          name: cachedData.name,
+          ticker: cachedData.ticker,
+          revenue24: row?.revenue24 || hD.revenue24 || "N/A",
+          ebit24: row?.ebit24 || hD.ebit24 || "N/A",
+          netProfit24: row?.netProfit24 || hD.netProfit24 || "N/A",
+          ebitda24: row?.ebitda24 || hD.ebitda24 || "N/A",
+          roi24: row?.roi24 || hD.roi24 || "N/A",
+          revenue22: row?.revenue22 || hD.revenue22 || "N/A",
+          ebit22: row?.ebit22 || hD.ebit22 || "N/A",
+          netProfit22: row?.netProfit22 || hD.netProfit22 || "N/A",
+          ebitda22: row?.ebitda22 || hD.ebitda22 || "N/A",
+          roi22: row?.roi22 || hD.roi22 || "N/A",
+          revenue23: row?.revenue23 || hD.revenue23 || "N/A",
+          ebit23: row?.ebit23 || hD.ebit23 || "N/A",
+          netProfit23: row?.netProfit23 || hD.netProfit23 || "N/A",
+          ebitda23: row?.ebitda23 || hD.ebitda23 || "N/A",
+          roi23: row?.roi23 || hD.roi23 || "N/A",
+          revenue21: row?.revenue21 || hD.revenue21 || "N/A",
+          ebit21: row?.ebit21 || hD.ebit21 || "N/A",
+          netProfit21: row?.netProfit21 || hD.netProfit21 || "N/A",
+          ebitda21: row?.ebitda21 || hD.ebitda21 || "N/A",
+          roi21: row?.roi21 || hD.roi21 || "N/A",
+          dsc: row?.oneYrDsc,
+        };
+
+        setHistory(obj);
+        console.log(obj);
+      } catch (error) {
+        console.error("Error fetching history:", error);
+      } finally {
+        setLoadingStates((prev) => ({ ...prev, history: false }));
+      }
+    }
   }, [cachedData]);
 
   const fetchRisksAndMitigations = useCallback(async () => {
@@ -255,7 +358,11 @@ export function StockDataDisplay({ data }: StockDataDisplayProps) {
         {loadingStates.companyOverview ? (
           <LoadingCard />
         ) : (
-          <FinancialSnapshot cacheData={cachedData} />
+          <FinancialSnapshot
+            image={finImage || ""}
+            hasImage={hasImage}
+            cacheData={history}
+          />
         )}
         {loadingStates.keyMetrics ? (
           <LoadingCard />
@@ -344,8 +451,12 @@ function CompanyOverview({
 
 function FinancialSnapshot({
   cacheData,
+  hasImage,
+  image,
 }: {
-  cacheData: TableType | undefined;
+  hasImage: boolean;
+  image: string;
+  cacheData: StockHistory | undefined;
 }) {
   const financialData = [
     {
@@ -400,7 +511,14 @@ function FinancialSnapshot({
                 1-Year Stock Price
               </span>
             </h2>
-            {data}
+            <div className="p-1">{data}</div>
+            {hasImage && (
+              <img
+                src={image || "/placeholder.svg"}
+                alt="Pasted image"
+                className="w-full max-w-[681px] h-auto aspect-[681/416] object-cover mx-auto rounded-lg shadow-lg"
+              />
+            )}
           </div>
 
           <div className="space-y-4">
@@ -409,7 +527,7 @@ function FinancialSnapshot({
                 4-Year Financials
               </span>
             </h2>
-            <div className="rounded-lg overflow-hidden">
+            <div className="rounded-lg overflow-x-scroll text-center">
               <table className="w-full">
                 <thead className="bg-zinc-800">
                   <tr>
