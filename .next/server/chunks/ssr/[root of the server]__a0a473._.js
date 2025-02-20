@@ -185,7 +185,7 @@ var { r: __turbopack_require__, f: __turbopack_module_context__, i: __turbopack_
 {
 const e = new Error(`Could not parse module '[project]/src/components/EditableStockData.tsx'
 
-Expression expected`);
+Unexpected token `Card`. Expected jsx identifier`);
 e.code = 'MODULE_UNPARSEABLE';
 throw e;}}),
 "[externals]/stream [external] (stream, cjs)": (function(__turbopack_context__) {
@@ -304,18 +304,29 @@ function Page() {
                     return await response.json();
                 };
                 const data = await fetchStockData(id);
-                const { data: url1, error: err1 } = await supabase.from("company").select("url1");
-                const { data: url2, error: err2 } = await supabase.from("company").select("url2");
-                if (!url1) data.url1 = await getImage(data.name);
-                else data.url1 = url1[0].url1;
-                if (!url2) data.url2 = await getImage(data.name);
-                else data.url2 = url2[0].url2;
-                console.log(data);
+                const { data: url1, error: err1 } = await supabase.from("company").select("url1").eq("name", data.name).single();
+                const { data: url2, error: err2 } = await supabase.from("company").select("url2").eq("name", data.name).single();
+                console.log(url1, url2);
+                if (!url1) {
+                    data.url1 = await getEncodedImage(await getImage(data.name));
+                    const { data: d, error } = await supabase.from("company").update({
+                        url1: data.url1
+                    }).eq("name", data.name);
+                    if (error) console.log("Image upload error", error);
+                } else data.url1 = url1.url1;
+                if (!url2) {
+                    data.url2 = await getEncodedImage(await getImage(data.name));
+                    const { data: d, error } = await supabase.from("company").update({
+                        url2: data.url2
+                    }).eq("name", data.name);
+                    if (error) console.log("Image upload error", error);
+                } else data.url2 = url2.url2;
                 setStockData(data);
             } catch (err) {
                 setError(err instanceof Error ? err.message : "Failed to load stock data");
                 console.error("Error loading stock data:", err);
             }
+            setIsLoading(false);
         };
         loadStockData();
     }, [
@@ -323,7 +334,7 @@ function Page() {
     ]);
     if (isLoading) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$fancy$2d$dark$2d$loading$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
         fileName: "[project]/src/app/pptDisplay/[id]/page.tsx",
-        lineNumber: 66,
+        lineNumber: 87,
         columnNumber: 25
     }, this);
     if (error) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -331,23 +342,24 @@ function Page() {
         children: error
     }, void 0, false, {
         fileName: "[project]/src/app/pptDisplay/[id]/page.tsx",
-        lineNumber: 67,
+        lineNumber: 88,
         columnNumber: 21
     }, this);
     if (!stockData) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         children: "No data available"
     }, void 0, false, {
         fileName: "[project]/src/app/pptDisplay/[id]/page.tsx",
-        lineNumber: 68,
+        lineNumber: 89,
         columnNumber: 26
     }, this);
+    console.log(stockData);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$EditableStockData$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["StockDataDisplay"], {
         userId: userId,
         id: id,
         data: stockData
     }, void 0, false, {
         fileName: "[project]/src/app/pptDisplay/[id]/page.tsx",
-        lineNumber: 70,
+        lineNumber: 93,
         columnNumber: 10
     }, this);
 }
@@ -364,6 +376,21 @@ async function getImage(_name) {
     });
     const response = await res.json();
     return response.imageUrl;
+    "TURBOPACK unreachable";
+}
+async function getEncodedImage(imageUrl) {
+    const data = {
+        imageUrl: imageUrl
+    };
+    const res = await fetch("/api/extractImage", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    const image = (await res.json()).base64Image;
+    return image;
 }
 }}),
 "[project]/src/app/pptDisplay/[id]/page.tsx [app-rsc] (ecmascript, Next.js server component, client modules ssr)": ((__turbopack_context__) => {

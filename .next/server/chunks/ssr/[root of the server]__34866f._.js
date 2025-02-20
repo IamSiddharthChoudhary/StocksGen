@@ -322,7 +322,8 @@ function StockDataDisplay({ data }) {
         strengthsAndCatalysts: true,
         analystHealth: true,
         risksAndMitigations: true,
-        conclusion: true
+        conclusion: true,
+        history: true
     });
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if (!cachedData) {
@@ -468,6 +469,14 @@ function StockDataDisplay({ data }) {
     }, [
         cachedData
     ]);
+    const fetchFinancialHistory = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(async ()=>{
+        setLoadingStates((prev)=>({
+                ...prev,
+                history: false
+            }));
+    }, [
+        cachedData
+    ]);
     const fetchRisksAndMitigations = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(async ()=>{
         setLoadingStates((prev)=>({
                 ...prev,
@@ -489,6 +498,7 @@ function StockDataDisplay({ data }) {
     ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if (cachedData) {
+            fetchFinancialHistory();
             fetchCompanyOverview();
             fetchKeyMetrics();
             fetchFinancialHealth();
@@ -499,6 +509,7 @@ function StockDataDisplay({ data }) {
         }
     }, [
         cachedData,
+        fetchFinancialHistory,
         fetchCompanyOverview,
         fetchKeyMetrics,
         fetchFinancialHealth,
@@ -510,7 +521,7 @@ function StockDataDisplay({ data }) {
     if (!cachedData) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$fancy$2d$dark$2d$loading$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
             fileName: "[project]/src/components/StockDataDisplay.tsx",
-            lineNumber: 228,
+            lineNumber: 239,
             columnNumber: 12
         }, this);
     }
@@ -521,7 +532,7 @@ function StockDataDisplay({ data }) {
             children: [
                 loadingStates.companyOverview ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 235,
+                    lineNumber: 246,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(CompanyOverview, {
                     name: cachedData.name,
@@ -529,67 +540,78 @@ function StockDataDisplay({ data }) {
                     imageSrc: imageSrc
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 237,
+                    lineNumber: 248,
+                    columnNumber: 11
+                }, this),
+                loadingStates.companyOverview ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
+                    fileName: "[project]/src/components/StockDataDisplay.tsx",
+                    lineNumber: 256,
+                    columnNumber: 11
+                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(FinancialSnapshot, {
+                    cacheData: cachedData
+                }, void 0, false, {
+                    fileName: "[project]/src/components/StockDataDisplay.tsx",
+                    lineNumber: 258,
                     columnNumber: 11
                 }, this),
                 loadingStates.keyMetrics ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 244,
+                    lineNumber: 261,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(KeyMetrics, {
                     metrics: keyMetrics
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 246,
+                    lineNumber: 263,
                     columnNumber: 11
                 }, this),
                 loadingStates.financialHealth ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 249,
+                    lineNumber: 266,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(FinancialHealth, {
                     financials: financialHealth
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 251,
+                    lineNumber: 268,
                     columnNumber: 11
                 }, this),
                 loadingStates.strengthsAndCatalysts ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 254,
+                    lineNumber: 271,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StrengthsAndCatalysts, {
                     strengths: strengthsAndCatalysts
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 256,
+                    lineNumber: 273,
                     columnNumber: 11
                 }, this),
                 loadingStates.analystHealth ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 259,
+                    lineNumber: 276,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(AnalystHealth, {
                     analystData: analystHealth
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 261,
+                    lineNumber: 278,
                     columnNumber: 11
                 }, this),
                 loadingStates.risksAndMitigations ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 264,
+                    lineNumber: 281,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(RisksAnalysis, {
                     points: risksAndMitigations
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 266,
+                    lineNumber: 283,
                     columnNumber: 11
                 }, this),
                 loadingStates.conclusion ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 269,
+                    lineNumber: 286,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Conclusion, {
                     rec: data.recommendation,
@@ -597,18 +619,18 @@ function StockDataDisplay({ data }) {
                     imageSrc: imageSrc2
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 271,
+                    lineNumber: 288,
                     columnNumber: 11
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/StockDataDisplay.tsx",
-            lineNumber: 233,
+            lineNumber: 244,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/StockDataDisplay.tsx",
-        lineNumber: 232,
+        lineNumber: 243,
         columnNumber: 5
     }, this);
 }
@@ -628,12 +650,12 @@ function CompanyOverview({ name, description, imageSrc }) {
                                 children: name
                             }, void 0, false, {
                                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                lineNumber: 296,
+                                lineNumber: 313,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 295,
+                            lineNumber: 312,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -641,46 +663,46 @@ function CompanyOverview({ name, description, imageSrc }) {
                             children: description
                         }, void 0, false, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 300,
+                            lineNumber: 317,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "mt-4 sm:mt-6 md:mt-8 flex items-center",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 lg:h-16 lg:w-16 bg-white rounded-full overflow-hidden",
+                                    className: "h-10 w-10 md:h-10 md:w-10 bg-white rounded-full overflow-hidden",
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                         className: "object-cover w-full h-full",
                                         src: "data:image/jpeg;base64,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",
                                         alt: "Adrian Saville"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                        lineNumber: 305,
+                                        lineNumber: 322,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 304,
+                                    lineNumber: 321,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                    className: "montserrat text-lg sm:text-xl md:text-2xl lg:text-3xl ml-3",
+                                    className: "montserrat text-lg md:text-xl ml-3",
                                     children: "by Adrian Saville"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 311,
+                                    lineNumber: 328,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 303,
+                            lineNumber: 320,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 294,
+                    lineNumber: 311,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -691,23 +713,292 @@ function CompanyOverview({ name, description, imageSrc }) {
                         alt: `${name} visual representation`
                     }, void 0, false, {
                         fileName: "[project]/src/components/StockDataDisplay.tsx",
-                        lineNumber: 317,
+                        lineNumber: 334,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 316,
+                    lineNumber: 333,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/StockDataDisplay.tsx",
-            lineNumber: 293,
+            lineNumber: 310,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/StockDataDisplay.tsx",
-        lineNumber: 292,
+        lineNumber: 309,
+        columnNumber: 5
+    }, this);
+}
+function FinancialSnapshot({ cacheData }) {
+    const financialData = [
+        {
+            year: 2024,
+            revenue: cacheData?.revenue24,
+            ebit: cacheData?.ebit24,
+            netProfit: cacheData?.netProfit24,
+            ebiTda: cacheData?.ebitda24,
+            roi: cacheData?.roi24
+        },
+        {
+            year: 2023,
+            revenue: cacheData?.revenue23,
+            ebit: cacheData?.ebit23,
+            netProfit: cacheData?.netProfit23,
+            ebiTda: cacheData?.ebitda23,
+            roi: cacheData?.roi23
+        },
+        {
+            year: 2022,
+            revenue: cacheData?.revenue22,
+            ebit: cacheData?.ebit22,
+            netProfit: cacheData?.netProfit22,
+            ebiTda: cacheData?.ebitda22,
+            roi: cacheData?.roi22
+        },
+        {
+            year: 2021,
+            revenue: cacheData?.revenue21,
+            ebit: cacheData?.ebit21,
+            netProfit: cacheData?.netProfit21,
+            ebiTda: cacheData?.ebitda21,
+            roi: cacheData?.roi21
+        }
+    ];
+    let data = cacheData?.dsc;
+    console.log(data);
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
+        className: "w-full max-w-[80vw] mx-auto bg-zinc-900 shadow-2xl shadow-cyan-400 text-gray-100 border-0 overflow-hidden",
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardHeader"], {
+            className: "p-4 sm:p-6 md:p-8",
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardTitle"], {
+                    className: "barlow-bold text-2xl sm:text-3xl font-bold text-center",
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        className: "bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text",
+                        children: "Financial Snapshot: Stock's Performance"
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/StockDataDisplay.tsx",
+                        lineNumber: 391,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
+                    fileName: "[project]/src/components/StockDataDisplay.tsx",
+                    lineNumber: 390,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "grid pt-5 lg:grid-cols-2 gap-8",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "space-y-4",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                    className: "barlow-bold text-xl sm:text-xl font-bold text-center",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text",
+                                        children: "1-Year Stock Price"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                        lineNumber: 399,
+                                        columnNumber: 15
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                    lineNumber: 398,
+                                    columnNumber: 13
+                                }, this),
+                                data
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/StockDataDisplay.tsx",
+                            lineNumber: 397,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "space-y-4",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                    className: "barlow-bold text-xl sm:text-xl font-bold text-center",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text",
+                                        children: "4-Year Financials"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                        lineNumber: 408,
+                                        columnNumber: 15
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                    lineNumber: 407,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "rounded-lg overflow-hidden",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
+                                        className: "w-full",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
+                                                className: "bg-zinc-800",
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "Year"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                            lineNumber: 416,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "Revenue ($B)"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                            lineNumber: 417,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "EBIT ($B)"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                            lineNumber: 418,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "Net Profit"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                            lineNumber: 419,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "EBITDA ($B)"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                            lineNumber: 420,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "ROI (%)"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                            lineNumber: 421,
+                                                            columnNumber: 21
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                    lineNumber: 415,
+                                                    columnNumber: 19
+                                                }, this)
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                lineNumber: 414,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
+                                                children: financialData.map((row)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                        className: "border-zinc-800",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 p-2",
+                                                                children: row.year.toString()
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                                lineNumber: 427,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 p-2",
+                                                                children: row.revenue
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                                lineNumber: 430,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 p-2",
+                                                                children: row.ebit
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                                lineNumber: 431,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 p-2",
+                                                                children: row.netProfit
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                                lineNumber: 432,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 p-2",
+                                                                children: row.ebiTda
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                                lineNumber: 433,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 p-2",
+                                                                children: row.roi
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                                lineNumber: 434,
+                                                                columnNumber: 23
+                                                            }, this)
+                                                        ]
+                                                    }, row.year, true, {
+                                                        fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                        lineNumber: 426,
+                                                        columnNumber: 21
+                                                    }, this))
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                                lineNumber: 424,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                        lineNumber: 413,
+                                        columnNumber: 15
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/StockDataDisplay.tsx",
+                                    lineNumber: 412,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/StockDataDisplay.tsx",
+                            lineNumber: 406,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/src/components/StockDataDisplay.tsx",
+                    lineNumber: 396,
+                    columnNumber: 9
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/src/components/StockDataDisplay.tsx",
+            lineNumber: 389,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/src/components/StockDataDisplay.tsx",
+        lineNumber: 388,
         columnNumber: 5
     }, this);
 }
@@ -724,12 +1015,12 @@ function KeyMetrics({ metrics }) {
                         children: "Key Market Metrics: Reflecting Value and Potential"
                     }, void 0, false, {
                         fileName: "[project]/src/components/StockDataDisplay.tsx",
-                        lineNumber: 341,
+                        lineNumber: 460,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 340,
+                    lineNumber: 459,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -742,7 +1033,7 @@ function KeyMetrics({ metrics }) {
                                     children: metric.value
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 351,
+                                    lineNumber: 470,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -753,7 +1044,7 @@ function KeyMetrics({ metrics }) {
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 354,
+                                            lineNumber: 473,
                                             columnNumber: 19
                                         }, this),
                                         metric.label === "Shares Outstanding" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -761,7 +1052,7 @@ function KeyMetrics({ metrics }) {
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 360,
+                                            lineNumber: 479,
                                             columnNumber: 19
                                         }, this),
                                         metric.label === "Shares Float" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -769,7 +1060,7 @@ function KeyMetrics({ metrics }) {
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 366,
+                                            lineNumber: 485,
                                             columnNumber: 19
                                         }, this),
                                         metric.label === "P/E" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -777,7 +1068,7 @@ function KeyMetrics({ metrics }) {
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 372,
+                                            lineNumber: 491,
                                             columnNumber: 19
                                         }, this),
                                         metric.label === "EV/EBITDA" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -785,7 +1076,7 @@ function KeyMetrics({ metrics }) {
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 378,
+                                            lineNumber: 497,
                                             columnNumber: 19
                                         }, this),
                                         metric.label === "Dividend Rate" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -793,14 +1084,14 @@ function KeyMetrics({ metrics }) {
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 384,
+                                            lineNumber: 503,
                                             columnNumber: 19
                                         }, this),
                                         metric.label
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 352,
+                                    lineNumber: 471,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -808,29 +1099,29 @@ function KeyMetrics({ metrics }) {
                                     children: metric.description
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 391,
+                                    lineNumber: 510,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, metric.label, true, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 347,
+                            lineNumber: 466,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 345,
+                    lineNumber: 464,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/StockDataDisplay.tsx",
-            lineNumber: 339,
+            lineNumber: 458,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/StockDataDisplay.tsx",
-        lineNumber: 338,
+        lineNumber: 457,
         columnNumber: 5
     }, this);
 }
@@ -847,12 +1138,12 @@ function FinancialHealth({ financials }) {
                         children: "Financial Health"
                     }, void 0, false, {
                         fileName: "[project]/src/components/StockDataDisplay.tsx",
-                        lineNumber: 415,
+                        lineNumber: 534,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 414,
+                    lineNumber: 533,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -865,7 +1156,7 @@ function FinancialHealth({ financials }) {
                                     children: item.value
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 425,
+                                    lineNumber: 544,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -876,7 +1167,7 @@ function FinancialHealth({ financials }) {
                                             gradientId: `gradient-fh-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 428,
+                                            lineNumber: 547,
                                             columnNumber: 19
                                         }, this),
                                         item.label === "Debt to Equity" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -884,7 +1175,7 @@ function FinancialHealth({ financials }) {
                                             gradientId: `gradient-fh-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 434,
+                                            lineNumber: 553,
                                             columnNumber: 19
                                         }, this),
                                         item.label === "Total Debt" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -892,7 +1183,7 @@ function FinancialHealth({ financials }) {
                                             gradientId: `gradient-fh-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 440,
+                                            lineNumber: 559,
                                             columnNumber: 19
                                         }, this),
                                         item.label === "Current Ratio" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -900,14 +1191,14 @@ function FinancialHealth({ financials }) {
                                             gradientId: `gradient-fh-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 446,
+                                            lineNumber: 565,
                                             columnNumber: 19
                                         }, this),
                                         item.label
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 426,
+                                    lineNumber: 545,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -915,29 +1206,29 @@ function FinancialHealth({ financials }) {
                                     children: item.description
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 453,
+                                    lineNumber: 572,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, item.label, true, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 421,
+                            lineNumber: 540,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 419,
+                    lineNumber: 538,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/StockDataDisplay.tsx",
-            lineNumber: 413,
+            lineNumber: 532,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/StockDataDisplay.tsx",
-        lineNumber: 412,
+        lineNumber: 531,
         columnNumber: 5
     }, this);
 }
@@ -954,17 +1245,17 @@ function StrengthsAndCatalysts({ strengths }) {
                         children: "Strengths and Catalysts for Continued Success"
                     }, void 0, false, {
                         fileName: "[project]/src/components/StockDataDisplay.tsx",
-                        lineNumber: 469,
+                        lineNumber: 588,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 468,
+                    lineNumber: 587,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                lineNumber: 467,
+                lineNumber: 586,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -985,7 +1276,7 @@ function StrengthsAndCatalysts({ strengths }) {
                                                     className: "w-[4px] h-[15px] absolute left-0 top-1.5 bg-purple-400 rounded-full"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                                    lineNumber: 484,
+                                                    lineNumber: 603,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -993,53 +1284,53 @@ function StrengthsAndCatalysts({ strengths }) {
                                                     children: strength.title
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                                    lineNumber: 485,
+                                                    lineNumber: 604,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 483,
+                                            lineNumber: 602,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                            className: "text-sm text-gray-300 mt-2",
+                                            className: "text-base text-gray-300 mt-2",
                                             children: strength.description
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 489,
+                                            lineNumber: 608,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 482,
+                                    lineNumber: 601,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                lineNumber: 481,
+                                lineNumber: 600,
                                 columnNumber: 15
                             }, this)
                         }, index, false, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 477,
+                            lineNumber: 596,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 475,
+                    lineNumber: 594,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                lineNumber: 474,
+                lineNumber: 593,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/StockDataDisplay.tsx",
-        lineNumber: 466,
+        lineNumber: 585,
         columnNumber: 5
     }, this);
 }
@@ -1050,19 +1341,18 @@ function AnalystHealth({ analystData }) {
             className: "flex flex-col",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "w-full h-[20vh] sm:h-[25vh] md:h-[30vh] relative overflow-hidden",
+                    className: "w-full h-[15vh] sm:h-[15vh] md:h-[20vh] relative overflow-hidden",
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                         className: "object-cover object-bottom w-full h-full",
-                        src: "https://images.pexels.com/photos/7239279/pexels-photo-7239279.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-                        alt: "Analyst insights visual representation"
+                        src: "https://images.pexels.com/photos/7239279/pexels-photo-7239279.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                     }, void 0, false, {
                         fileName: "[project]/src/components/StockDataDisplay.tsx",
-                        lineNumber: 515,
+                        lineNumber: 634,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 514,
+                    lineNumber: 633,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardHeader"], {
@@ -1075,12 +1365,12 @@ function AnalystHealth({ analystData }) {
                                 children: "Analyst Insights"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                lineNumber: 523,
+                                lineNumber: 641,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 522,
+                            lineNumber: 640,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1093,7 +1383,7 @@ function AnalystHealth({ analystData }) {
                                             children: item.value
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 535,
+                                            lineNumber: 653,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1104,7 +1394,7 @@ function AnalystHealth({ analystData }) {
                                                     gradientId: `gradient-ah-${index}`
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                                    lineNumber: 540,
+                                                    lineNumber: 658,
                                                     columnNumber: 23
                                                 }, this),
                                                 item.label === "Analyst Rating (1-5)" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -1112,7 +1402,7 @@ function AnalystHealth({ analystData }) {
                                                     gradientId: `gradient-ah-${index}`
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                                    lineNumber: 547,
+                                                    lineNumber: 664,
                                                     columnNumber: 23
                                                 }, this),
                                                 item.label === "Mean Target Price" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -1120,7 +1410,7 @@ function AnalystHealth({ analystData }) {
                                                     gradientId: `gradient-ah-${index}`
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                                    lineNumber: 554,
+                                                    lineNumber: 670,
                                                     columnNumber: 23
                                                 }, this),
                                                 item.label === "Implied +/-" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -1128,14 +1418,14 @@ function AnalystHealth({ analystData }) {
                                                     gradientId: `gradient-ah-${index}`
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                                    lineNumber: 561,
+                                                    lineNumber: 676,
                                                     columnNumber: 23
                                                 }, this),
                                                 item.label
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 538,
+                                            lineNumber: 656,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1143,35 +1433,35 @@ function AnalystHealth({ analystData }) {
                                             children: item.description
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 569,
+                                            lineNumber: 683,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, item.label, true, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 531,
+                                    lineNumber: 649,
                                     columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 527,
+                            lineNumber: 645,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 521,
+                    lineNumber: 639,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/StockDataDisplay.tsx",
-            lineNumber: 513,
+            lineNumber: 632,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/StockDataDisplay.tsx",
-        lineNumber: 512,
+        lineNumber: 631,
         columnNumber: 5
     }, this);
 }
@@ -1188,17 +1478,17 @@ function RisksAnalysis({ points }) {
                         children: "Risks and Mitigations"
                     }, void 0, false, {
                         fileName: "[project]/src/components/StockDataDisplay.tsx",
-                        lineNumber: 586,
+                        lineNumber: 700,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 585,
+                    lineNumber: 699,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                lineNumber: 584,
+                lineNumber: 698,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1219,7 +1509,7 @@ function RisksAnalysis({ points }) {
                                                     className: "w-[4px] h-[15px] absolute left-0 top-1.5 bg-purple-400 rounded-full"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                                    lineNumber: 601,
+                                                    lineNumber: 715,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -1227,17 +1517,17 @@ function RisksAnalysis({ points }) {
                                                     children: point.title
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                                    lineNumber: 602,
+                                                    lineNumber: 716,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 600,
+                                            lineNumber: 714,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                            className: "text-sm sm:text-sm text-gray-300 mt-2",
+                                            className: "text-sm sm:text-base text-gray-300 mt-2",
                                             children: point.description.split("Mitigation:").map((part, i)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].Fragment, {
                                                     children: i === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                                                         children: part
@@ -1245,7 +1535,7 @@ function RisksAnalysis({ points }) {
                                                         children: [
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
                                                                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                                                lineNumber: 613,
+                                                                lineNumber: 727,
                                                                 columnNumber: 29
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1256,7 +1546,7 @@ function RisksAnalysis({ points }) {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                                                lineNumber: 614,
+                                                                lineNumber: 728,
                                                                 columnNumber: 29
                                                             }, this),
                                                             part
@@ -1264,44 +1554,44 @@ function RisksAnalysis({ points }) {
                                                     }, void 0, true)
                                                 }, i, false, {
                                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                                    lineNumber: 608,
+                                                    lineNumber: 722,
                                                     columnNumber: 23
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                            lineNumber: 606,
+                                            lineNumber: 720,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 599,
+                                    lineNumber: 713,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                lineNumber: 598,
+                                lineNumber: 712,
                                 columnNumber: 15
                             }, this)
                         }, index, false, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 594,
+                            lineNumber: 708,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 592,
+                    lineNumber: 706,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                lineNumber: 591,
+                lineNumber: 705,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/StockDataDisplay.tsx",
-        lineNumber: 583,
+        lineNumber: 697,
         columnNumber: 5
     }, this);
 }
@@ -1319,12 +1609,12 @@ function Conclusion({ description, imageSrc, rec }) {
                         alt: "Conclusion visual"
                     }, void 0, false, {
                         fileName: "[project]/src/components/StockDataDisplay.tsx",
-                        lineNumber: 646,
+                        lineNumber: 760,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 645,
+                    lineNumber: 759,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardHeader"], {
@@ -1337,12 +1627,12 @@ function Conclusion({ description, imageSrc, rec }) {
                                 children: "Conclusion"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                lineNumber: 654,
+                                lineNumber: 768,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 653,
+                            lineNumber: 767,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1350,49 +1640,49 @@ function Conclusion({ description, imageSrc, rec }) {
                             children: description
                         }, void 0, false, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 658,
+                            lineNumber: 772,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "flex flex-col sm:flex-row items-center mt-4 gap-2",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                    className: "font-bold text-white barlow-bold text-xl sm:text-2xl",
+                                    className: "font-bold text-white barlow text-xl sm:text-2xl",
                                     children: "Recommendation:"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 662,
+                                    lineNumber: 776,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    className: "montserrat text-lg sm:text-xl lg:text-2xl",
+                                    className: "barlow-bold text-lg sm:text-xl lg:text-2xl",
                                     children: rec
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                    lineNumber: 665,
+                                    lineNumber: 779,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 661,
+                            lineNumber: 775,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/StockDataDisplay.tsx",
-                    lineNumber: 652,
+                    lineNumber: 766,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/StockDataDisplay.tsx",
-            lineNumber: 644,
+            lineNumber: 758,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/StockDataDisplay.tsx",
-        lineNumber: 643,
+        lineNumber: 757,
         columnNumber: 5
     }, this);
 }
@@ -1447,17 +1737,17 @@ function LoadingCard() {
                 className: "w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin"
             }, void 0, false, {
                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                lineNumber: 730,
+                lineNumber: 844,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/components/StockDataDisplay.tsx",
-            lineNumber: 729,
+            lineNumber: 843,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/StockDataDisplay.tsx",
-        lineNumber: 728,
+        lineNumber: 842,
         columnNumber: 5
     }, this);
 }
@@ -1480,7 +1770,7 @@ function GradientIcon({ icon: Icon, gradientId }) {
                                 stopColor: "#9333EA"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                lineNumber: 747,
+                                lineNumber: 861,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("stop", {
@@ -1488,7 +1778,7 @@ function GradientIcon({ icon: Icon, gradientId }) {
                                 stopColor: "#3B82F6"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                lineNumber: 748,
+                                lineNumber: 862,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("stop", {
@@ -1496,13 +1786,13 @@ function GradientIcon({ icon: Icon, gradientId }) {
                                 stopColor: "#6366F1"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                                lineNumber: 749,
+                                lineNumber: 863,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/StockDataDisplay.tsx",
-                        lineNumber: 746,
+                        lineNumber: 860,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("mask", {
@@ -1511,18 +1801,18 @@ function GradientIcon({ icon: Icon, gradientId }) {
                             color: "white"
                         }, void 0, false, {
                             fileName: "[project]/src/components/StockDataDisplay.tsx",
-                            lineNumber: 752,
+                            lineNumber: 866,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/StockDataDisplay.tsx",
-                        lineNumber: 751,
+                        lineNumber: 865,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                lineNumber: 745,
+                lineNumber: 859,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -1532,13 +1822,13 @@ function GradientIcon({ icon: Icon, gradientId }) {
                 mask: `url(#mask-${gradientId})`
             }, void 0, false, {
                 fileName: "[project]/src/components/StockDataDisplay.tsx",
-                lineNumber: 755,
+                lineNumber: 869,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/StockDataDisplay.tsx",
-        lineNumber: 744,
+        lineNumber: 858,
         columnNumber: 5
     }, this);
 }

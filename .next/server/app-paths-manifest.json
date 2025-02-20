@@ -1,6 +1,5 @@
 {
-  "/pptDisplay/[id]/page": "app/pptDisplay/[id]/page.js",
-  "/api/stock/route": "app/api/stock/route.js",
-  "/viewOnlyPpt/[id]/page": "app/viewOnlyPpt/[id]/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/users/[id]/page": "app/users/[id]/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js"
 }

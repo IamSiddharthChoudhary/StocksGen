@@ -285,13 +285,16 @@ __turbopack_esm__({
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__ = __turbopack_import__("[project]/node_modules/lucide-react/dist/esm/icons/x.js [app-client] (ecmascript) <export default as X>");
 ;
 var _s = __turbopack_refresh__.signature();
 ;
-function EditableText({ initialText, hasChanged, setHasChanged, mitigation = false, onSave, className = "" }) {
+;
+function EditableText({ initialText, hasChanged, setHasChanged, mitigation = false, count, setCount, onSave, className = "" }) {
     _s();
     const [isEditing, setIsEditing] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [text, setText] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(initialText);
+    const [pastedImage, setPastedImage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const textRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const cursorPositionRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
@@ -338,42 +341,97 @@ function EditableText({ initialText, hasChanged, setHasChanged, mitigation = fal
             cursorPositionRef.current = range.startOffset;
         }
     };
+    const handlePaste = (e)=>{
+        const items = e.clipboardData.items;
+        for(let i = 0; i < items.length; i++){
+            if (items[i].type.indexOf("image") !== -1) {
+                e.preventDefault();
+                const file = items[i].getAsFile();
+                if (file) {
+                    setPastedImage(file);
+                    setHasChanged(true);
+                }
+                break;
+            }
+        }
+        if (count && setCount) {
+            setText(text + `$#${count}`);
+            setCount(count + 1);
+        }
+    };
     const handleSave = ()=>{
-        onSave(text);
+        onSave(text, pastedImage || undefined);
+    };
+    const handleCut = ()=>{
+        setPastedImage(null);
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "relative",
-        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            ref: textRef,
-            className: `${className} ${isEditing ? "border border-blue-500 rounded" : ""}`,
-            contentEditable: isEditing,
-            onBlur: handleSave,
-            onClick: ()=>setIsEditing(true),
-            onInput: handleInput,
-            suppressContentEditableWarning: true,
-            children: [
-                mitigation && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                    className: "font-bold text-white",
-                    children: "Mitigation: "
-                }, void 0, false, {
-                    fileName: "[project]/src/components/editableTest.tsx",
-                    lineNumber: 98,
-                    columnNumber: 11
-                }, this),
-                text
-            ]
-        }, void 0, true, {
-            fileName: "[project]/src/components/editableTest.tsx",
-            lineNumber: 86,
-            columnNumber: 7
-        }, this)
-    }, void 0, false, {
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                ref: textRef,
+                className: `${className} ${isEditing ? "border border-blue-500 rounded" : ""}`,
+                contentEditable: isEditing,
+                onBlur: handleSave,
+                onClick: ()=>setIsEditing(true),
+                onInput: handleInput,
+                onPaste: handlePaste,
+                suppressContentEditableWarning: true,
+                children: [
+                    mitigation && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        className: "font-bold text-white",
+                        children: "Mitigation: "
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/editableTest.tsx",
+                        lineNumber: 129,
+                        columnNumber: 11
+                    }, this),
+                    text
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/components/editableTest.tsx",
+                lineNumber: 116,
+                columnNumber: 7
+            }, this),
+            pastedImage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "mt-2",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        className: "absolute right-0 bg-slate-900 rounded-full p-1 bg-opacity-50 m-1",
+                        onClick: handleCut,
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {}, void 0, false, {
+                            fileName: "[project]/src/components/editableTest.tsx",
+                            lineNumber: 139,
+                            columnNumber: 13
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/editableTest.tsx",
+                        lineNumber: 135,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                        src: URL.createObjectURL(pastedImage) || "/placeholder.svg",
+                        alt: "Pasted image",
+                        className: "max-w-full h-auto"
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/editableTest.tsx",
+                        lineNumber: 141,
+                        columnNumber: 11
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/components/editableTest.tsx",
+                lineNumber: 134,
+                columnNumber: 9
+            }, this)
+        ]
+    }, void 0, true, {
         fileName: "[project]/src/components/editableTest.tsx",
-        lineNumber: 85,
+        lineNumber: 115,
         columnNumber: 5
     }, this);
 }
-_s(EditableText, "6I4JxVI13EHcrc/UWpejr1Dty14=");
+_s(EditableText, "voAOlyJjag+7RywB43B/EZCRnfM=");
 _c = EditableText;
 var _c;
 __turbopack_refresh__.register(_c, "EditableText");
@@ -590,13 +648,13 @@ function StockDataDisplay({ data, id, userId }) {
     _s();
     const [calls, setCalls] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
     const [client, setClient] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
-    const [dataSave, setDataSave] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(data);
+    const [dataSave, setDataSave] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])();
     const [isSaving, setIsSaving] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [cachedData, setCachedData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [editedVals, setEditedVals] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({});
     const [companyDescription, setCompanyDescription] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [hasChanged, setHasChanged] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
-    const [dividendRate, setDividentRate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [count, setCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
     const [imageSrc, setImageSrc] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("https://images.unsplash.com/photo-1456930266018-fda42f7404a7?q=80&w=1595&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
     const [imageSrc2, setImageSrc2] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("https://images.unsplash.com/photo-1456930266018-fda42f7404a7?q=80&w=1595&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
@@ -613,24 +671,20 @@ function StockDataDisplay({ data, id, userId }) {
         strengthsAndCatalysts: true,
         analystHealth: true,
         risksAndMitigations: true,
-        conclusion: true
+        conclusion: true,
+        history: true
     });
+    const [history, setHistory] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "StockDataDisplay.useEffect": ()=>{
             setClient((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supaBaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createSupabaseClient"])());
         }
     }["StockDataDisplay.useEffect"], []);
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "StockDataDisplay.useEffect": ()=>{
-            defaultSave();
-        }
-    }["StockDataDisplay.useEffect"], [
-        conclusion,
-        data,
-        id,
-        client,
-        companyDescription
-    ]);
+    // useEffect(() => {
+    //   setTimeout(() => {
+    //     defaultSave();
+    //   }, 2000);
+    // }, [conclusion, data, id, client, companyDescription]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "StockDataDisplay.useEffect": ()=>{
             // const divRate = await fetch(
@@ -642,6 +696,19 @@ function StockDataDisplay({ data, id, userId }) {
         }
     }["StockDataDisplay.useEffect"], [
         data,
+        cachedData
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "StockDataDisplay.useEffect": ()=>{
+            if (cachedData) {
+                const newData = {
+                    ...cachedData,
+                    risksAndMitigation: parsePointsToString(risksAndMitigations)
+                };
+                setDataSave(cachedData);
+            }
+        }
+    }["StockDataDisplay.useEffect"], [
         cachedData
     ]);
     const fetchCompanyOverview = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
@@ -972,10 +1039,24 @@ function StockDataDisplay({ data, id, userId }) {
                         risksData = defaultData;
                     }
                     if (risksData && risksData.risksAndMitigation) {
-                        setRisksAndMitigations(parseRisksAndMitigations(risksData.risksAndMitigation));
+                        const parsedRisks = parseRisksAndMitigations(risksData.risksAndMitigation);
+                        setRisksAndMitigations(parsedRisks);
+                        setEditedVals({
+                            "StockDataDisplay.useCallback[fetchRisksAndMitigations]": (prev)=>({
+                                    ...prev,
+                                    risksAndMitigation: parsePointsToString(parsedRisks)
+                                })
+                        }["StockDataDisplay.useCallback[fetchRisksAndMitigations]"]);
                     } else {
                         const risksText = await dsc(`Give me 6 Risks with explanation and also their mitigations respectively of ${cachedData.name} stock with headings and description of not more than 20 words for each`);
-                        setRisksAndMitigations(parseRisksAndMitigations(risksText));
+                        const parsedRisks = parseRisksAndMitigations(risksText);
+                        setRisksAndMitigations(parsedRisks);
+                        setEditedVals({
+                            "StockDataDisplay.useCallback[fetchRisksAndMitigations]": (prev)=>({
+                                    ...prev,
+                                    risksAndMitigation: parsePointsToString(parsedRisks)
+                                })
+                        }["StockDataDisplay.useCallback[fetchRisksAndMitigations]"]);
                     }
                 } catch (error) {
                     console.error("Error fetching risks and mitigations:", error);
@@ -1039,6 +1120,105 @@ function StockDataDisplay({ data, id, userId }) {
         client,
         data.url2
     ]);
+    const fetchHistory = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
+        "StockDataDisplay.useCallback[fetchHistory]": async ()=>{
+            if (client && cachedData && !history) {
+                try {
+                    setLoadingStates({
+                        "StockDataDisplay.useCallback[fetchHistory]": (prev)=>({
+                                ...prev,
+                                history: true
+                            })
+                    }["StockDataDisplay.useCallback[fetchHistory]"]);
+                    const { data: row, error } = await client.from("company").select(`
+            revenue24,
+            ebit24,
+            netProfit24,
+            ebitda24,
+            roi24,
+            revenue22,
+            ebit22,
+            netProfit22,
+            ebitda22,
+            roi22,
+            revenue23,
+            ebit23,
+            netProfit23,
+            ebitda23,
+            roi23,
+            revenue21,
+            ebit21,
+            netProfit21,
+            ebitda21,
+            roi21,
+            oneYrDsc`).eq("name", cachedData.name).single();
+                    if (error) throw error;
+                    const req = {
+                        symbol: id
+                    };
+                    const response = await fetch("/api/history", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(req)
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const hD = await response.json();
+                    const obj = {
+                        name: cachedData.name,
+                        ticker: cachedData.ticker,
+                        revenue24: row?.revenue24 || hD.revenue24,
+                        ebit24: row?.ebit24 || hD.ebit24,
+                        netProfit24: row?.netProfit24 || hD.netProfit24,
+                        ebitda24: row?.ebitda24 || hD.ebitda24,
+                        roi24: row?.roi24 || hD.roi24,
+                        revenue22: row?.revenue22 || hD.revenue22,
+                        ebit22: row?.ebit22 || hD.ebit22,
+                        netProfit22: row?.netProfit22 || hD.netProfit22,
+                        ebitda22: row?.ebitda22 || hD.ebitda22,
+                        roi22: row?.roi22 || hD.roi22,
+                        revenue23: row?.revenue23 || hD.revenue23,
+                        ebit23: row?.ebit23 || hD.ebit23,
+                        netProfit23: row?.netProfit23 || hD.netProfit23,
+                        ebitda23: row?.ebitda23 || hD.ebitda23,
+                        roi23: row?.roi23 || hD.roi23,
+                        revenue21: row?.revenue21 || hD.revenue21,
+                        ebit21: row?.ebit21 || hD.ebit21,
+                        netProfit21: row?.netProfit21 || hD.netProfit21,
+                        ebitda21: row?.ebitda21 || hD.ebitda21,
+                        roi21: row?.roi21 || hD.roi21,
+                        dsc: row?.oneYrDsc || await dsc(`Give 2024 stock price summary of ${cachedData.name} in 40 words`)
+                    };
+                    setHistory(obj);
+                    console.log(obj);
+                } catch (error) {
+                    console.error("Error fetching history:", error);
+                } finally{
+                    setLoadingStates({
+                        "StockDataDisplay.useCallback[fetchHistory]": (prev)=>({
+                                ...prev,
+                                history: false
+                            })
+                    }["StockDataDisplay.useCallback[fetchHistory]"]);
+                }
+            }
+        }
+    }["StockDataDisplay.useCallback[fetchHistory]"], [
+        cachedData,
+        client,
+        id,
+        history
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "StockDataDisplay.useEffect": ()=>{
+            fetchHistory();
+        }
+    }["StockDataDisplay.useEffect"], [
+        fetchHistory
+    ]);
     async function saveEditedContent() {
         setIsSaving(true);
         try {
@@ -1048,6 +1228,7 @@ function StockDataDisplay({ data, id, userId }) {
                 ...editedVals,
                 ticker: id,
                 strengthsAndCatalysts: editedVals?.strengthsAndCatalysts || parsePointsToString(strengthsAndCatalysts),
+                risksAndMitigation: editedVals?.risksAndMitigation || parsePointsToString(risksAndMitigations),
                 conclusion: editedVals?.conclusion || conclusion,
                 description: editedVals?.description || companyDescription
             };
@@ -1119,32 +1300,28 @@ function StockDataDisplay({ data, id, userId }) {
                 const col = arr[0];
                 const type = arr[1];
                 const index = arr[2];
-                const { data: oldData, error } = await client.from("company").select("risksAndMitigation").eq("name", data.name).single();
-                console.log(oldData);
-                const oldVal = oldData?.risksAndMitigation;
-                console.log(oldVal, col);
-                let newVal;
-                if (type === "title") {
-                    newVal = oldVal.slice(0, oldVal.indexOf(index) + 2) + content + oldVal.slice(oldVal.indexOf(":", oldVal.indexOf(index) + 2));
-                } else if (type === "description") {
-                    if (Number(index) < 6) {
-                        newVal = oldVal.slice(0, oldVal.indexOf(":", oldVal.indexOf(index) + 2) + 1) + content + oldVal.slice(oldVal.indexOf((Number(index) + 1).toString()) - 1);
-                    } else {
-                        newVal = oldVal.slice(0, oldVal.indexOf(":", oldVal.indexOf(index) + 2) + 1) + content;
+                const updatedRisks = risksAndMitigations.map((risk, i)=>{
+                    if (i === Number(index) - 1) {
+                        return {
+                            ...risk,
+                            [type]: content
+                        };
                     }
-                }
-                console.log(newVal);
-                const updatedData = {
-                    ...data,
-                    ticker: id,
-                    risksAndMitigation: newVal
-                };
+                    return risk;
+                });
+                const newVal = parsePointsToString(updatedRisks);
+                setRisksAndMitigations(updatedRisks);
+                setEditedVals((prev)=>({
+                        ...prev,
+                        risksAndMitigation: newVal
+                    }));
                 if (client) {
-                    const { data: serverData, error } = await client.from("company").upsert(updatedData).eq("name", data.name).select();
+                    const { data: serverData, error } = await client.from("company").update({
+                        risksAndMitigation: newVal
+                    }).eq("name", data.name).select();
                     if (error) {
                         throw error;
                     }
-                    setCachedData(updatedData);
                 }
             }
         } catch (error) {
@@ -1153,84 +1330,62 @@ function StockDataDisplay({ data, id, userId }) {
             setIsSaving(false);
         }
     }
-    const defaultSave = async ()=>{
-        if (client) {
-            const { data: prev, error } = await client.from("company").select("*").eq("ticker", id).single();
-            if (!prev && companyDescription && conclusion && strengthsAndCatalysts && risksAndMitigations) {
-                const defaultData = {
-                    ...data,
-                    ticker: id,
-                    strengthsAndCatalysts: parsePointsToString(strengthsAndCatalysts),
-                    risksAndMitigation: parsePointsToString(risksAndMitigations),
-                    description: companyDescription,
-                    conclusion: conclusion
+    // const defaultSave = async () => {
+    //   if (client) {
+    //     const { data: prev, error } = await client
+    //       .from("company")
+    //       .select("*")
+    //       .eq("ticker", id)
+    //       .single();
+    //     if (
+    //       !prev &&
+    //       companyDescription &&
+    //       conclusion &&
+    //       strengthsAndCatalysts &&
+    //       risksAndMitigations
+    //     ) {
+    //       const defaultData = {
+    //         ...data,
+    //         ticker: id,
+    //         strengthsAndCatalysts: parsePointsToString(strengthsAndCatalysts),
+    //         risksAndMitigation: parsePointsToString(risksAndMitigations),
+    //         description: companyDescription,
+    //         conclusion: conclusion,
+    //       };
+    //       console.log(defaultData);
+    //       const res = await client?.from("company").insert(defaultData).select();
+    //       console.log(res);
+    //     }
+    //   }
+    // };
+    const dsc = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
+        "StockDataDisplay.useCallback[dsc]": async (_prompt)=>{
+            if (calls < 30) {
+                const data = {
+                    prompt: _prompt
                 };
-                console.log(defaultData);
-                const res = await client?.from("company").insert(defaultData).select();
-                console.log(res);
+                try {
+                    const res = await fetch("/api/prompt", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    const response = await res.text();
+                    const obj = JSON.parse(response);
+                    setCalls({
+                        "StockDataDisplay.useCallback[dsc]": (prevCalls)=>prevCalls + 1
+                    }["StockDataDisplay.useCallback[dsc]"]);
+                    return obj.response;
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                }
             }
         }
-    };
-    // async function savePoints(section: string, content: string): Promise<void> {
-    //   setIsSaving(true);
-    //   try {
-    //     const [col, type, index] = section.split("-");
-    //     const updatedData = {
-    //       ...dataSave,
-    //       [col]: updateNestedStructure(dataSave[col], index, type, content),
-    //     };
-    //     if (client) {
-    //       const { data: serverData, error } = await client
-    //         .from("company")
-    //         .upsert({ ticker: id, ...updatedData })
-    //         .select();
-    //       if (error) {
-    //         throw error;
-    //       }
-    //       setDataSave(updatedData);
-    //     }
-    //   } catch (error) {
-    //     console.error("Error saving points:", error);
-    //   } finally {
-    //     setIsSaving(false);
-    //   }
-    // }
-    // function updateNestedStructure(
-    //   d: string,
-    //   index: string,
-    //   type: string,
-    //   content: string
-    // ): string {
-    //   const lines = d.split("\n");
-    //   const targetIndex = lines.findIndex((line) => line.startsWith(`${index}:`));
-    //   if (targetIndex === -1) return d;
-    //   if (type === "title") {
-    //     lines[targetIndex] = `${index}: ${content}`;
-    //   } else if (type === "description") {
-    //     if (targetIndex + 1 < lines.length) {
-    //       lines[targetIndex + 1] = content;
-    //     }
-    //   }
-    //   return lines.join("\n");
-    // }
-    async function dsc(_prompt) {
-        if (calls < 30) {
-            const data = {
-                prompt: _prompt
-            };
-            const res = await fetch("/api/prompt", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            });
-            const response = await res.text();
-            const obj = JSON.parse(response);
-            setCalls(calls + 1);
-            return obj.response;
-        }
-    }
+    }["StockDataDisplay.useCallback[dsc]"], [
+        calls
+    ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "StockDataDisplay.useEffect": ()=>{
             if (cachedData) {
@@ -1260,12 +1415,19 @@ function StockDataDisplay({ data, id, userId }) {
     }["StockDataDisplay.useEffect"], [
         editedVals
     ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "StockDataDisplay.useEffect": ()=>{
+            console.log("editedVals updated:", editedVals);
+        }
+    }["StockDataDisplay.useEffect"], [
+        editedVals
+    ]);
     if (!cachedData) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             children: "Loading..."
         }, void 0, false, {
             fileName: "[project]/src/components/EditableStockData.tsx",
-            lineNumber: 938,
+            lineNumber: 985,
             columnNumber: 12
         }, this);
     }
@@ -1274,7 +1436,7 @@ function StockDataDisplay({ data, id, userId }) {
         children: [
             isSaving && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingOverlay, {}, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 943,
+                lineNumber: 990,
                 columnNumber: 20
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(ShareButton, {
@@ -1282,7 +1444,7 @@ function StockDataDisplay({ data, id, userId }) {
                 id: id
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 944,
+                lineNumber: 991,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$refreshButton$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1296,7 +1458,7 @@ function StockDataDisplay({ data, id, userId }) {
                 }
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 945,
+                lineNumber: 992,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1305,12 +1467,12 @@ function StockDataDisplay({ data, id, userId }) {
                     onClick: saveEditedContent
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 961,
+                    lineNumber: 1008,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 960,
+                lineNumber: 1007,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1318,7 +1480,7 @@ function StockDataDisplay({ data, id, userId }) {
                 children: [
                     loadingStates.companyOverview ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 966,
+                        lineNumber: 1013,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CompanyOverview, {
                         hasChanged: hasChanged,
@@ -1331,12 +1493,29 @@ function StockDataDisplay({ data, id, userId }) {
                         imageSrc: imageSrc
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 968,
+                        lineNumber: 1015,
+                        columnNumber: 11
+                    }, this),
+                    loadingStates.history ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
+                        fileName: "[project]/src/components/EditableStockData.tsx",
+                        lineNumber: 1027,
+                        columnNumber: 11
+                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FinancialSnapshot, {
+                        count: count,
+                        setCount: setCount,
+                        cacheData: history,
+                        hasChanged: hasChanged,
+                        setHasChanged: setHasChanged,
+                        setEditedVals: setEditedVals,
+                        saveEditedContent: saveEditedContent
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/EditableStockData.tsx",
+                        lineNumber: 1029,
                         columnNumber: 11
                     }, this),
                     loadingStates.keyMetrics ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 980,
+                        lineNumber: 1040,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(KeyMetrics, {
                         hasChanged: hasChanged,
@@ -1347,12 +1526,12 @@ function StockDataDisplay({ data, id, userId }) {
                         metrics: keyMetrics
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 982,
+                        lineNumber: 1042,
                         columnNumber: 11
                     }, this),
                     loadingStates.financialHealth ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 992,
+                        lineNumber: 1052,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FinancialHealth, {
                         hasChanged: hasChanged,
@@ -1363,12 +1542,12 @@ function StockDataDisplay({ data, id, userId }) {
                         financials: financialHealth
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 994,
+                        lineNumber: 1054,
                         columnNumber: 11
                     }, this),
                     loadingStates.strengthsAndCatalysts ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1004,
+                        lineNumber: 1064,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(StrengthsAndCatalysts, {
                         hasChanged: hasChanged,
@@ -1377,12 +1556,12 @@ function StockDataDisplay({ data, id, userId }) {
                         strengths: strengthsAndCatalysts
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1006,
+                        lineNumber: 1066,
                         columnNumber: 11
                     }, this),
                     loadingStates.analystHealth ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1014,
+                        lineNumber: 1074,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(AnalystHealth, {
                         hasChanged: hasChanged,
@@ -1394,12 +1573,12 @@ function StockDataDisplay({ data, id, userId }) {
                         nOA: data.numberOfAnalysts
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1016,
+                        lineNumber: 1076,
                         columnNumber: 11
                     }, this),
                     loadingStates.risksAndMitigations ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1027,
+                        lineNumber: 1087,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(RisksAnalysis, {
                         hasChanged: hasChanged,
@@ -1408,12 +1587,12 @@ function StockDataDisplay({ data, id, userId }) {
                         points: risksAndMitigations
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1029,
+                        lineNumber: 1089,
                         columnNumber: 11
                     }, this),
                     loadingStates.conclusion ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(LoadingCard, {}, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1037,
+                        lineNumber: 1097,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Conclusion, {
                         hasChanged: hasChanged,
@@ -1426,23 +1605,23 @@ function StockDataDisplay({ data, id, userId }) {
                         rec: data.recommendation
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1039,
+                        lineNumber: 1099,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 964,
+                lineNumber: 1011,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 942,
+        lineNumber: 989,
         columnNumber: 5
     }, this);
 }
-_s(StockDataDisplay, "ObAvtL/3sShA3L9pYQjFhOhbLZE=", false, function() {
+_s(StockDataDisplay, "/rxpmMWOB7r/xNn3omsqZY221ac=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
     ];
@@ -1450,7 +1629,7 @@ _s(StockDataDisplay, "ObAvtL/3sShA3L9pYQjFhOhbLZE=", false, function() {
 _c = StockDataDisplay;
 function CompanyOverview({ name, description, imageSrc, saveEditedContent, setEditedVals, editedVals, hasChanged, setHasChanged }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
-        className: "w-full max-w-[95vw] sm:max-w-[90vw] md:max-w-[85vw] lg:max-w-[80vw] mx-auto bg-zinc-900 shadow-2xl shadow-cyan-400 text-white border-0 overflow-hidden",
+        className: "w-full max-w-[80vw] mx-auto bg-zinc-900 shadow-2xl shadow-cyan-400 text-white border-0 overflow-hidden",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "flex flex-col lg:flex-row",
             children: [
@@ -1464,12 +1643,12 @@ function CompanyOverview({ name, description, imageSrc, saveEditedContent, setEd
                                 children: extractName(name)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/EditableStockData.tsx",
-                                lineNumber: 1079,
+                                lineNumber: 1139,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1078,
+                            lineNumber: 1138,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
@@ -1485,46 +1664,45 @@ function CompanyOverview({ name, description, imageSrc, saveEditedContent, setEd
                             className: "montserrat text-sm sm:text-base md:text-lg lg:text-xl text-white"
                         }, void 0, false, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1083,
+                            lineNumber: 1143,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "mt-4 sm:mt-6 md:mt-8 flex items-center",
+                            className: "mt-4 sm:mt-6 md:mt-10 md:pt-5 flex items-center",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 lg:h-16 lg:w-16 bg-white rounded-full overflow-hidden",
+                                    className: "h-10 w-10 sm:h-12 sm:w-12 md:h-10 md:w-10 lg:h-10 lg:w-10 bg-white rounded-full overflow-hidden",
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                         className: "object-cover w-full h-full",
-                                        src: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBw8SEg8QEA8NEhIQDxAPFhUQDQ8PFQ8QFRYWFxUXFRUYHSggGBolGxUWITEhJSkrLi4uFx8zODMsNygtLisBCgoKDg0OGxAQFy0fICUtLS0tLSstLSstLS0tLS0tLS0tLS0tKy0tLSstKy0tLS0tKy0tLS0tKy0tLTUtLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAAAQIDBQYEB//EADoQAAIBAgQDBQYFAgYDAAAAAAABAgMRBBIhMQVBUQYiYXGBEzKRobHBFEJS0fAjgnKSorLh8SRiY//EABkBAQADAQEAAAAAAAAAAAAAAAABAgQDBf/EACMRAQEAAgICAgIDAQAAAAAAAAABAhEDMRIhBEFR0SJhsYH/2gAMAwEAAhEDEQA/APloALoCUiYxMiQFYxLEgkCLkORRsCZTKEggQCQBCZmizCyYMDM1fQwszIrUjzJGIEqLei1bPdDhVWycssU+rv8AQi3Q8ANpDh1NWzyk30UbfLc9FSdLLZU09t4wjb4vUpc4tpowbGpgoyvk7r6Pb6fS5469CUHaS/Z+RaZSosYgASgAAAAAAAAJIAEkEgAmZIsxEpgZkWuUTJJGFIvGJZIkCCQVcgJbKORDZBAAAAAAAAAEEhgXpyM9GnmaWy5tp2R5qUbu38se2lq8uWLjzvo1t4a30It0l7qMadNXjkzKOZuSTtr+5gxWNlK2XM7KUry8r6LkbDhnDHUSc5NrTu2VnbS5vYcEpNJJWscMs5v2648dscS5VXyk/L526fUtHETWlm/ifQcPweEVl5eSIXZ+ldtLX6EecXnFXCwrSbu0o287+ljLXrRmu/drZvnHx6neUuB0l+SPqka3jPZmE43pLJNbNbPzI84Xjr5/Wp5Xbdbp9V1MZsK2HmlKlNWnCWi2uudjwWNGN3HCzVQACyoAAAAAAAASQSAIJAExZkTMJZMDKQ2Q5FGyRLkVAIAAAAAAAAAAAAAB6qFG8U+r+R7uFYWU5Nu9kk/O38QwuHk4Qa6S+dvmdBwfDKK2/lzjlde3TCbr14FWRsaMzwUla68fkeqi7GeteLZ0z004HnwsrmxpoSbMrphcClSJ6po81Ziwl25XtLwn2n9SHvwV9PzLmjg8XTyya66+jPrM9z512toqGJmo2SaT0O3Dl704c2P20oANDOEEgCASQAAAAAASCCQBBIAAAAAAAAAAkAQCSVECpZRLqJNyRhBeaKkDt+zeDjOhTlbW0o+bue+pRypW5tv03+55Ox1f/wAaS2cZTSe2mjPcp3tC67ysvTmccovjdVjg7+hnobkzpKKv0TfwNM+Nyv3Kcnbe0M1zjcWqZx1mFNnCPjyOEp9rVB/1ISX9rR0XCeP06y7r5bcydaLd9N46ZgqpFa+Jyxc5aJK5x2L7WTlLLTjG17XcowX+ZizZ06WvHmfNu1k74iXgrHVRxmIcVK9J3/TPNdeex4uLcAVeo6kqypJRTblC+605rncnj1jd1Tklymo4kGTEUnCU4OzcJSjps7O2hjNTKAAAAABBIAgEkAAABIIJAkAAAAAAJSAglIsoliRCiSVbKuQFnIrCRBDIGZq5s+zvDPaupUcc8KGWUobOebMkvS1zVwZ0XYbHKniXTl7mJg6T/wAau4fdf3EZdenTi15zy6banWoPSlB0VBd+FmmlKyU9N1tc9WHo5Klv0pLXm9tPgeXiVGUKmDnB5W33rrRwy3knbwTNzicK+60tVeN//XZetjhGjmwmOXpgxdHOsqvrzs9DnfwWJc5RjNwilo4q2aXTw+B0avGSVz2QoQlq1rte9r+fUp5aqccdxzOC4DUlCX4huUuWapKSer3v7ullp0PJV4dPC1oVKctLpSje9rvqjufwsYrRfc5/i6V5K9k7aPryZNy2mYajd4mSq0VfaVr20NBjeAZnFxmoWWvdUk9b6N7ctjecNV6LXQ9tCCa2RGOVxqcsJl6aCjwiPtZVYpRzLvKPut9bLme+eHTkk/D5bfU2koqJ4E1eUv06/PX6Fd7pJqx8u43b8Ricu3t6tv8AMzxFpzcm5PeTcvV6kG2MNu6gABAAAAAAAAAQSAIBJAFgSEgIJSLKJIEKJIbKtkiWyGyAQAAAENEgCIMz05uLUou0oyUk+kk7p/FHnkZYMD6MqtKvQjWVs1s0bO8qMly809PFG1w9bPRo1Ho5Qi2uja1+Z814bxmph1JJKUJatO+kuqf82Po+Bp5aShe+SdSN9r9+TXyscfHxrRln5Yy/bXcQnaTkZ8BiU9bmv4vU1t/NbFMBhpvZ2OeUdOPLTo62N00texxlfj1F+09o4qWdrvOzsnpb6mxxFR09JTu3pZI19bhlKte6jFvm1uJPyvbvp0vZ7iFKULp3Vmt9mXo8RjNzVOXuSs3rZ+F+ZzXDOy8qV3+ItC98qatJedzayqQhH8ltveVhZCW96bKtj7rfU1uP4hCnRrTk96coJc5TkrJL+cjzU8PJyco5lHo23Z+FzVdrJf0qcb6us5ekYtP/AHIjGbykVzz/AIuVQANbEAAAQSAIBIAgAAAAAAAGRRJIbIuSLNlWyAQAAAAAACbE5QKkpFgmSKEQZZopJEDLJXTXVM+m0sUln10nGnXj4qUVF/6o/wCpHzOlFtSa/LFtndY+P9KjKk1mpU4pL9dNxWaL80r+cWVznra+Hu6Y8e1KT6NE8ExerjJ95XT8zVfiVJ21Wul9Gn+l+JSNVxqKS56NeKOFjtvTfca4RSrQzN1IyWuanNxa9NmavB8ImrKKpVdJa1Paa32vaXI6DB4iMo26mKWEnF9x6PlYiV1x19x44cNrLfDYaKyrepVklLqo3R6sNwqn7VVXTp50rLLGyiubS6+Jnp0Z9WeyjSsm3q7C1a2fh48dUtdLeWhw3aLGe0q5U+7SWReL/M/t6HQ9oMfkzNPvO8Y+D5v0ONqLmdOLH7ZeXL6UAB2cQgkAQCQBAJIAAAAQSAIBJAFwAAAAAE2FwCQsLkAS2RcWAAiO5Iyt2sm2BaQhBydl/wBeZmjSS974L9xKpbRJJPoTpG2VSjGORa33f6n+xvOCYmVSllUu/S7uvOPK/hp8UcxM9HC8Y6VSMtbbSXWL3/f0O2Gt6y6Uy3rc7bnFYR1Lxt7OtFXSe1SK2s+a8Vsa94lu8ZpxqR0ael7fc7GFKFSKUu8tJRadmnycXyNL2g4W3FzWso/mSs5LpLpLx5lOb4t4/c9z/HXi+ROX1fV/1HDOIWauzpI4i+Wz5dT5rRxLRtcJxSUdL3XnsZrx76aMc9dvocJK262MGIxChCTb2TfojmqHGW7KKlfwtqe2beRutrGVoON3tJqO/qUuFtkXufpxmLxsqs3OXPZfpXQxovxTAyoVZQd7bxf64PZ/Z+KZiizTrXpj3v2pJWIMrVzHYgQAAAAAAAAAABBIAgAAWFibkXAmwuRYkCBYkAAWp03LZf8ABnjSpr3pNvotF8SdG3mJhBvRJvyPcnBbQj9fqWdfktPLQnSNsEMJb33bwWr+OyLSklpFJL6+b5icjFJk6QiUjBN7PozKysSRX2kXzXroWjEhNNXWxZEodZ2QxuaMqUnrDWPjDp6P6o3lVWb2aa1T1OB4bi3RqwqL8r1XWL0kvh9juMbi4LLre6vFR7zkuVl99j0Pj5+WOr9MfNjrLcaHjHZhSbqUPNx5rxj18jUUODyvZya5HW0Ktabad6MUk9MspyT8XovT4npngbxTnZ9KmZ5n0vff4/Azc/xZveF1/X6aOH5F6z9/21XD+GxpK61fiZuOztSiubqU/k7/AGPdhMM+etvE8vF6WZ0o/wD1XyTf2POwn85L+Xo3XharxvB+1otWvOknOOl8ytecfVarxXicZ7Jflfo/3O/qVLZ5p2ywlqrOzSvc4Gcm25aJtt2Stv0PQ+RjN7efx2qNNblZrmZ4zJai/Dy/YzWOu3kBepTa8ihVKASAIBJAAAAAAAAAE2JKi4E3AAEl8PTzSUVz+S5mOxseEU9ZT6Wj8d/sWxm6i3URUVrpaKKNZUvc3eKhZN9WaacdWXymlMatRqtaHoueRIzwZCy7IJIZKEMoXZUDG1ld+Un8H19S5LSas+ZWD5PdfNcmBY7Dss1Oi8uVVacsrvtUjvG/TS6v4HHG47L4jLXjHM0qq9no/wA28fnp/cduDPxzcuXHeLrMRCUk5Ri3dNNZsri+a1vqeLCY3KlTnUqd3RKdKKcV0bWr8zc3lH3ldPnHR+qKYnB06y1tm5SX3PR1je4xeVnTLhrOKaaatutTDWw91KXON2vHrb6GHhsZU81Nu92rXTVm3Z8vL4GynHlytb0PPw+N48+VvX1/1vz+Tvgxk7/Tke0eNyU4winete7ttTVrq/Vt28rnMI7fjvD82HlFq8qVOpUVlbWLv80vmcOmPkY6yivDluVIuCrZndl3LQwyRe5Xl5OxWxMVABVIAABBIAgEkAAAAsSSAIuLgARc6Hh1BRpRb5rO/Xb5WJB14p7c+Tpr+KYnkmajUAi3dTOmWDMkQBEsiYYBZCoAAFKmne6b+QBAsWhJpqS0aaafRrVAAfUcDiVVp06i2nFS05N7r0d0Wnh+cXZ/zcA9HHK62wZYzdY53zQckk8zXJqXddrdAqk5PurLFPeW8vJckQC9/Kk9M/sk1JPXMnF+TVj5S6bi3CW8JOD84uz+hAMnyJ01cCQ0AZWlQmnz/n82IBASRABRYIJAEAAAAABBIA//2Q==",
                                         alt: "Adrian Saville"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/EditableStockData.tsx",
-                                        lineNumber: 1094,
+                                        lineNumber: 1154,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1093,
+                                    lineNumber: 1153,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                    className: "montserrat text-lg sm:text-xl md:text-2xl lg:text-3xl ml-3",
+                                    className: "montserrat text-lg sm:text-xl md:text-xl lg:text-xl ml-3",
                                     children: "by Adrian Saville"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1100,
+                                    lineNumber: 1159,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1092,
+                            lineNumber: 1152,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1077,
+                    lineNumber: 1137,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1535,23 +1713,23 @@ function CompanyOverview({ name, description, imageSrc, saveEditedContent, setEd
                         alt: `${name} visual representation`
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1106,
+                        lineNumber: 1165,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1105,
+                    lineNumber: 1164,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/EditableStockData.tsx",
-            lineNumber: 1076,
+            lineNumber: 1136,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1075,
+        lineNumber: 1135,
         columnNumber: 5
     }, this);
 }
@@ -1569,12 +1747,12 @@ function KeyMetrics({ hasChanged, setHasChanged, metrics, saveEditedContent, set
                         children: "Key Market Metrics: Reflecting Value and Potential"
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1141,
+                        lineNumber: 1200,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1140,
+                    lineNumber: 1199,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1595,7 +1773,7 @@ function KeyMetrics({ hasChanged, setHasChanged, metrics, saveEditedContent, set
                                     className: "text-lg sm:text-xl font-bold"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1151,
+                                    lineNumber: 1210,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1606,7 +1784,7 @@ function KeyMetrics({ hasChanged, setHasChanged, metrics, saveEditedContent, set
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1165,
+                                            lineNumber: 1224,
                                             columnNumber: 19
                                         }, this),
                                         metric.label === "Shares Outstanding" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -1614,7 +1792,7 @@ function KeyMetrics({ hasChanged, setHasChanged, metrics, saveEditedContent, set
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1171,
+                                            lineNumber: 1230,
                                             columnNumber: 19
                                         }, this),
                                         metric.label === "Shares Float" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -1622,7 +1800,7 @@ function KeyMetrics({ hasChanged, setHasChanged, metrics, saveEditedContent, set
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1177,
+                                            lineNumber: 1236,
                                             columnNumber: 19
                                         }, this),
                                         metric.label === "P/E" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -1630,7 +1808,7 @@ function KeyMetrics({ hasChanged, setHasChanged, metrics, saveEditedContent, set
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1183,
+                                            lineNumber: 1242,
                                             columnNumber: 19
                                         }, this),
                                         metric.label === "EV/EBITDA" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -1638,7 +1816,7 @@ function KeyMetrics({ hasChanged, setHasChanged, metrics, saveEditedContent, set
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1189,
+                                            lineNumber: 1248,
                                             columnNumber: 19
                                         }, this),
                                         metric.label === "Dividend Rate" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -1646,14 +1824,14 @@ function KeyMetrics({ hasChanged, setHasChanged, metrics, saveEditedContent, set
                                             gradientId: `gradient-km-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1195,
+                                            lineNumber: 1254,
                                             columnNumber: 19
                                         }, this),
                                         metric.label
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1163,
+                                    lineNumber: 1222,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
@@ -1669,29 +1847,29 @@ function KeyMetrics({ hasChanged, setHasChanged, metrics, saveEditedContent, set
                                     className: "text-sm sm:text-base mt-2 text-gray-400"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1202,
+                                    lineNumber: 1261,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, metric.label, true, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1147,
+                            lineNumber: 1206,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1145,
+                    lineNumber: 1204,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/EditableStockData.tsx",
-            lineNumber: 1139,
+            lineNumber: 1198,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1138,
+        lineNumber: 1197,
         columnNumber: 5
     }, this);
 }
@@ -1709,12 +1887,12 @@ function FinancialHealth({ hasChanged, setHasChanged, financials, saveEditedCont
                         children: "Financial Health"
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1246,
+                        lineNumber: 1305,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1245,
+                    lineNumber: 1304,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1735,7 +1913,7 @@ function FinancialHealth({ hasChanged, setHasChanged, financials, saveEditedCont
                                     className: "text-lg sm:text-xl font-bold"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1256,
+                                    lineNumber: 1315,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1746,7 +1924,7 @@ function FinancialHealth({ hasChanged, setHasChanged, financials, saveEditedCont
                                             gradientId: `gradient-fh-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1267,
+                                            lineNumber: 1326,
                                             columnNumber: 19
                                         }, this),
                                         item.label === "Debt to Equity" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -1754,7 +1932,7 @@ function FinancialHealth({ hasChanged, setHasChanged, financials, saveEditedCont
                                             gradientId: `gradient-fh-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1273,
+                                            lineNumber: 1332,
                                             columnNumber: 19
                                         }, this),
                                         item.label === "Total Debt" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -1762,7 +1940,7 @@ function FinancialHealth({ hasChanged, setHasChanged, financials, saveEditedCont
                                             gradientId: `gradient-fh-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1279,
+                                            lineNumber: 1338,
                                             columnNumber: 19
                                         }, this),
                                         item.label === "Current Ratio" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
@@ -1770,14 +1948,14 @@ function FinancialHealth({ hasChanged, setHasChanged, financials, saveEditedCont
                                             gradientId: `gradient-fh-${index}`
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1285,
+                                            lineNumber: 1344,
                                             columnNumber: 19
                                         }, this),
                                         item.label
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1265,
+                                    lineNumber: 1324,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
@@ -1793,29 +1971,29 @@ function FinancialHealth({ hasChanged, setHasChanged, financials, saveEditedCont
                                     className: "text-sm sm:text-base mt-2 text-gray-400"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1292,
+                                    lineNumber: 1351,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, item.label, true, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1252,
+                            lineNumber: 1311,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1250,
+                    lineNumber: 1309,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/EditableStockData.tsx",
-            lineNumber: 1244,
+            lineNumber: 1303,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1243,
+        lineNumber: 1302,
         columnNumber: 5
     }, this);
 }
@@ -1833,17 +2011,17 @@ function StrengthsAndCatalysts({ hasChanged, setHasChanged, strengths, savePoint
                         children: "Strengths and Catalysts for Continued Success"
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1327,
+                        lineNumber: 1386,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1326,
+                    lineNumber: 1385,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 1325,
+                lineNumber: 1384,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1864,7 +2042,7 @@ function StrengthsAndCatalysts({ hasChanged, setHasChanged, strengths, savePoint
                                                     className: "w-[4px] h-[15px] absolute left-0 top-1.5 bg-purple-400 rounded-full"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                                    lineNumber: 1342,
+                                                    lineNumber: 1401,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -1877,18 +2055,18 @@ function StrengthsAndCatalysts({ hasChanged, setHasChanged, strengths, savePoint
                                                         className: "text-base sm:text-lg font-semibold text-white"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/EditableStockData.tsx",
-                                                        lineNumber: 1344,
+                                                        lineNumber: 1403,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                                    lineNumber: 1343,
+                                                    lineNumber: 1402,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1341,
+                                            lineNumber: 1400,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
@@ -1896,42 +2074,42 @@ function StrengthsAndCatalysts({ hasChanged, setHasChanged, strengths, savePoint
                                             setHasChanged: setHasChanged,
                                             initialText: strength.description,
                                             onSave: (newText)=>savePoints(`strengthsAndCatalysts-description-${index + 1}`, newText),
-                                            className: "text-sm text-gray-300 mt-2"
+                                            className: "text-base text-gray-300 mt-2"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1358,
+                                            lineNumber: 1417,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1340,
+                                    lineNumber: 1399,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/EditableStockData.tsx",
-                                lineNumber: 1339,
+                                lineNumber: 1398,
                                 columnNumber: 15
                             }, this)
                         }, index, false, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1335,
+                            lineNumber: 1394,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1333,
+                    lineNumber: 1392,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 1332,
+                lineNumber: 1391,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1324,
+        lineNumber: 1383,
         columnNumber: 5
     }, this);
 }
@@ -1955,7 +2133,7 @@ function GradientIcon({ icon: Icon, gradientId }) {
                                 stopColor: "#9333EA"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/EditableStockData.tsx",
-                                lineNumber: 1391,
+                                lineNumber: 1450,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("stop", {
@@ -1963,7 +2141,7 @@ function GradientIcon({ icon: Icon, gradientId }) {
                                 stopColor: "#3B82F6"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/EditableStockData.tsx",
-                                lineNumber: 1392,
+                                lineNumber: 1451,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("stop", {
@@ -1971,13 +2149,13 @@ function GradientIcon({ icon: Icon, gradientId }) {
                                 stopColor: "#6366F1"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/EditableStockData.tsx",
-                                lineNumber: 1393,
+                                lineNumber: 1452,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1390,
+                        lineNumber: 1449,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("mask", {
@@ -1986,18 +2164,18 @@ function GradientIcon({ icon: Icon, gradientId }) {
                             color: "white"
                         }, void 0, false, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1396,
+                            lineNumber: 1455,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1395,
+                        lineNumber: 1454,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 1389,
+                lineNumber: 1448,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
@@ -2007,17 +2185,379 @@ function GradientIcon({ icon: Icon, gradientId }) {
                 mask: `url(#mask-${gradientId})`
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 1399,
+                lineNumber: 1458,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1388,
+        lineNumber: 1447,
         columnNumber: 5
     }, this);
 }
 _c5 = GradientIcon;
+function FinancialSnapshot({ cacheData, hasChanged, setHasChanged, setEditedVals, count, setCount }) {
+    const financialData = [
+        {
+            year: 2024,
+            revenue: cacheData?.revenue24,
+            ebit: cacheData?.ebit24,
+            netProfit: cacheData?.netProfit24,
+            ebiTda: cacheData?.ebitda24,
+            roi: cacheData?.roi24
+        },
+        {
+            year: 2023,
+            revenue: cacheData?.revenue23,
+            ebit: cacheData?.ebit23,
+            netProfit: cacheData?.netProfit23,
+            ebiTda: cacheData?.ebitda23,
+            roi: cacheData?.roi23
+        },
+        {
+            year: 2022,
+            revenue: cacheData?.revenue22,
+            ebit: cacheData?.ebit22,
+            netProfit: cacheData?.netProfit22,
+            ebiTda: cacheData?.ebitda22,
+            roi: cacheData?.roi22
+        },
+        {
+            year: 2021,
+            revenue: cacheData?.revenue21,
+            ebit: cacheData?.ebit21,
+            netProfit: cacheData?.netProfit21,
+            ebiTda: cacheData?.ebitda21,
+            roi: cacheData?.roi21
+        }
+    ];
+    let data = cacheData?.dsc;
+    console.log(cacheData);
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
+        className: "w-full max-w-[80vw] mx-auto bg-zinc-900 shadow-2xl shadow-cyan-400 text-gray-100 border-0 overflow-hidden",
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
+            className: "p-4 sm:p-6 md:p-8",
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
+                    className: "barlow-bold text-2xl sm:text-3xl font-bold text-center",
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        className: "bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text",
+                        children: "Financial Snapshot: Stock's Performance"
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/EditableStockData.tsx",
+                        lineNumber: 1525,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
+                    fileName: "[project]/src/components/EditableStockData.tsx",
+                    lineNumber: 1524,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "grid pt-5 lg:grid-cols-2 gap-8",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "space-y-4",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                    className: "barlow-bold text-xl sm:text-xl font-bold text-center",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text",
+                                        children: "1-Year Stock Price"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/EditableStockData.tsx",
+                                        lineNumber: 1533,
+                                        columnNumber: 15
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/EditableStockData.tsx",
+                                    lineNumber: 1532,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
+                                    count: count,
+                                    setCount: setCount,
+                                    hasChanged: hasChanged,
+                                    setHasChanged: setHasChanged,
+                                    initialText: cacheData?.dsc,
+                                    onSave: (newText)=>{
+                                        setEditedVals((prev)=>({
+                                                ...prev,
+                                                oneYrDsc: newText
+                                            }));
+                                    },
+                                    className: ""
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/EditableStockData.tsx",
+                                    lineNumber: 1537,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/EditableStockData.tsx",
+                            lineNumber: 1531,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "space-y-4",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                    className: "barlow-bold text-xl sm:text-xl font-bold text-center",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 text-transparent bg-clip-text",
+                                        children: "4-Year Financials"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/EditableStockData.tsx",
+                                        lineNumber: 1555,
+                                        columnNumber: 15
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/EditableStockData.tsx",
+                                    lineNumber: 1554,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "rounded-lg overflow-x-scroll",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
+                                        className: "w-full",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
+                                                className: "bg-zinc-800",
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "Year"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/EditableStockData.tsx",
+                                                            lineNumber: 1563,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "Revenue ($B)"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/EditableStockData.tsx",
+                                                            lineNumber: 1564,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "EBIT ($B)"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/EditableStockData.tsx",
+                                                            lineNumber: 1565,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "Net Profit"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/EditableStockData.tsx",
+                                                            lineNumber: 1566,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "EBITDA ($B)"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/EditableStockData.tsx",
+                                                            lineNumber: 1567,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                            className: "text-gray-100 p-2",
+                                                            children: "ROI (%)"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/EditableStockData.tsx",
+                                                            lineNumber: 1568,
+                                                            columnNumber: 21
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/components/EditableStockData.tsx",
+                                                    lineNumber: 1562,
+                                                    columnNumber: 19
+                                                }, this)
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/EditableStockData.tsx",
+                                                lineNumber: 1561,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
+                                                children: financialData.map((row)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                        className: "border-zinc-800",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 text-center p-2",
+                                                                children: row.year.toString()
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/EditableStockData.tsx",
+                                                                lineNumber: 1574,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 p-2",
+                                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
+                                                                    hasChanged: hasChanged,
+                                                                    setHasChanged: setHasChanged,
+                                                                    initialText: row.revenue,
+                                                                    onSave: (newText)=>{
+                                                                        setEditedVals((prev)=>({
+                                                                                ...prev,
+                                                                                [`revenue${row.year.toString().slice(2)}`]: newText
+                                                                            }));
+                                                                    },
+                                                                    className: "text-center"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/EditableStockData.tsx",
+                                                                    lineNumber: 1578,
+                                                                    columnNumber: 25
+                                                                }, this)
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/EditableStockData.tsx",
+                                                                lineNumber: 1577,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 p-2",
+                                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
+                                                                    hasChanged: hasChanged,
+                                                                    setHasChanged: setHasChanged,
+                                                                    initialText: row.ebit,
+                                                                    onSave: (newText)=>{
+                                                                        setEditedVals((prev)=>({
+                                                                                ...prev,
+                                                                                [`revenue${row.year.toString().slice(2)}`]: newText
+                                                                            }));
+                                                                    },
+                                                                    className: "text-center"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/EditableStockData.tsx",
+                                                                    lineNumber: 1593,
+                                                                    columnNumber: 25
+                                                                }, this)
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/EditableStockData.tsx",
+                                                                lineNumber: 1592,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 p-2",
+                                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
+                                                                    hasChanged: hasChanged,
+                                                                    setHasChanged: setHasChanged,
+                                                                    initialText: row.netProfit,
+                                                                    onSave: (newText)=>{
+                                                                        setEditedVals((prev)=>({
+                                                                                ...prev,
+                                                                                [`netProfit${row.year.toString().slice(2)}`]: newText
+                                                                            }));
+                                                                    },
+                                                                    className: "text-center"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/EditableStockData.tsx",
+                                                                    lineNumber: 1608,
+                                                                    columnNumber: 25
+                                                                }, this)
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/EditableStockData.tsx",
+                                                                lineNumber: 1607,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 p-2",
+                                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
+                                                                    hasChanged: hasChanged,
+                                                                    setHasChanged: setHasChanged,
+                                                                    initialText: row.ebiTda,
+                                                                    onSave: (newText)=>{
+                                                                        setEditedVals((prev)=>({
+                                                                                ...prev,
+                                                                                [`ebiTda${row.year.toString().slice(2)}`]: newText
+                                                                            }));
+                                                                    },
+                                                                    className: "text-center"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/EditableStockData.tsx",
+                                                                    lineNumber: 1623,
+                                                                    columnNumber: 25
+                                                                }, this)
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/EditableStockData.tsx",
+                                                                lineNumber: 1622,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                className: "text-gray-100 p-2",
+                                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
+                                                                    hasChanged: hasChanged,
+                                                                    setHasChanged: setHasChanged,
+                                                                    initialText: row.roi,
+                                                                    onSave: (newText)=>{
+                                                                        setEditedVals((prev)=>({
+                                                                                ...prev,
+                                                                                [`roi${row.year.toString().slice(2)}`]: newText
+                                                                            }));
+                                                                    },
+                                                                    className: "text-center"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/EditableStockData.tsx",
+                                                                    lineNumber: 1638,
+                                                                    columnNumber: 25
+                                                                }, this)
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/EditableStockData.tsx",
+                                                                lineNumber: 1637,
+                                                                columnNumber: 23
+                                                            }, this)
+                                                        ]
+                                                    }, row.year, true, {
+                                                        fileName: "[project]/src/components/EditableStockData.tsx",
+                                                        lineNumber: 1573,
+                                                        columnNumber: 21
+                                                    }, this))
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/EditableStockData.tsx",
+                                                lineNumber: 1571,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/EditableStockData.tsx",
+                                        lineNumber: 1560,
+                                        columnNumber: 15
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/EditableStockData.tsx",
+                                    lineNumber: 1559,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/EditableStockData.tsx",
+                            lineNumber: 1553,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/src/components/EditableStockData.tsx",
+                    lineNumber: 1530,
+                    columnNumber: 9
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/src/components/EditableStockData.tsx",
+            lineNumber: 1523,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/src/components/EditableStockData.tsx",
+        lineNumber: 1522,
+        columnNumber: 5
+    }, this);
+}
+_c6 = FinancialSnapshot;
 function AnalystHealth({ hasChanged, setHasChanged, analystData, saveEditedContent, setEditedVals, editedVals, nOA }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
         className: "w-full max-w-[80vw] mx-auto bg-zinc-900 shadow-lg sm:shadow-xl md:shadow-2xl shadow-cyan-400/20 sm:shadow-cyan-400/30 md:shadow-cyan-400/40 text-gray-100 border-0 overflow-hidden",
@@ -2025,19 +2565,18 @@ function AnalystHealth({ hasChanged, setHasChanged, analystData, saveEditedConte
             className: "flex flex-col",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "w-full h-[20vh] sm:h-[25vh] md:h-[30vh] relative overflow-hidden",
+                    className: "w-full h-[15vh] sm:h-[15vh] md:h-[20vh] relative overflow-hidden",
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                         className: "object-cover object-bottom w-full h-full",
-                        src: "https://images.pexels.com/photos/7239279/pexels-photo-7239279.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-                        alt: "Analyst insights visual representation"
+                        src: "https://images.pexels.com/photos/7239279/pexels-photo-7239279.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1435,
+                        lineNumber: 1689,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1434,
+                    lineNumber: 1688,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
@@ -2050,12 +2589,12 @@ function AnalystHealth({ hasChanged, setHasChanged, analystData, saveEditedConte
                                 children: "Analyst Insights"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/EditableStockData.tsx",
-                                lineNumber: 1443,
+                                lineNumber: 1696,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1442,
+                            lineNumber: 1695,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2076,7 +2615,7 @@ function AnalystHealth({ hasChanged, setHasChanged, analystData, saveEditedConte
                                             className: "text-base sm:text-lg md:text-xl font-bold"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1455,
+                                            lineNumber: 1708,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2084,45 +2623,41 @@ function AnalystHealth({ hasChanged, setHasChanged, analystData, saveEditedConte
                                             children: [
                                                 item.label === "Number of Analysts" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
                                                     icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"],
-                                                    gradientId: `gradient-ah-${index}`,
-                                                    className: "w-4 h-4 sm:w-5 sm:h-5 mr-1"
+                                                    gradientId: `gradient-ah-${index}`
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                                    lineNumber: 1469,
+                                                    lineNumber: 1722,
                                                     columnNumber: 23
                                                 }, this),
                                                 item.label === "Analyst Rating (1-5)" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
                                                     icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$star$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Star$3e$__["Star"],
-                                                    gradientId: `gradient-ah-${index}`,
-                                                    className: "w-4 h-4 sm:w-5 sm:h-5 mr-1"
+                                                    gradientId: `gradient-ah-${index}`
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                                    lineNumber: 1476,
+                                                    lineNumber: 1729,
                                                     columnNumber: 23
                                                 }, this),
                                                 item.label === "Mean Target Price" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
                                                     icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$banknote$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Banknote$3e$__["Banknote"],
-                                                    gradientId: `gradient-ah-${index}`,
-                                                    className: "w-4 h-4 sm:w-5 sm:h-5 mr-1"
+                                                    gradientId: `gradient-ah-${index}`
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                                    lineNumber: 1483,
+                                                    lineNumber: 1736,
                                                     columnNumber: 23
                                                 }, this),
                                                 item.label === "Implied +/-" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GradientIcon, {
                                                     icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$scale$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Scale$3e$__["Scale"],
-                                                    gradientId: `gradient-ah-${index}`,
-                                                    className: "w-4 h-4 sm:w-5 sm:h-5 mr-1"
+                                                    gradientId: `gradient-ah-${index}`
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                                    lineNumber: 1490,
+                                                    lineNumber: 1743,
                                                     columnNumber: 23
                                                 }, this),
                                                 item.label
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1467,
+                                            lineNumber: 1720,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
@@ -2138,7 +2673,7 @@ function AnalystHealth({ hasChanged, setHasChanged, analystData, saveEditedConte
                                             className: "text-sm sm:text-base mt-2 text-gray-400"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1499,
+                                            lineNumber: 1752,
                                             columnNumber: 19
                                         }, this),
                                         item.label === "Analyst Rating (1-5)" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2149,52 +2684,52 @@ function AnalystHealth({ hasChanged, setHasChanged, analystData, saveEditedConte
                                                     children: "Number of analysts:"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                                    lineNumber: 1513,
+                                                    lineNumber: 1766,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     children: nOA
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                                    lineNumber: 1514,
+                                                    lineNumber: 1767,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1512,
+                                            lineNumber: 1765,
                                             columnNumber: 21
                                         }, this)
                                     ]
                                 }, item.label, true, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1451,
+                                    lineNumber: 1704,
                                     columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1447,
+                            lineNumber: 1700,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1441,
+                    lineNumber: 1694,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/EditableStockData.tsx",
-            lineNumber: 1433,
+            lineNumber: 1687,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1432,
+        lineNumber: 1686,
         columnNumber: 5
     }, this);
 }
-_c6 = AnalystHealth;
+_c7 = AnalystHealth;
 function RisksAnalysis({ hasChanged, setHasChanged, points, savePoints }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
         className: "w-full max-w-[80vw] mx-auto bg-zinc-900 shadow-2xl shadow-cyan-400 text-gray-100 border-0 overflow-hidden",
@@ -2208,17 +2743,17 @@ function RisksAnalysis({ hasChanged, setHasChanged, points, savePoints }) {
                         children: "Risks and Mitigations"
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1541,
+                        lineNumber: 1794,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1540,
+                    lineNumber: 1793,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 1539,
+                lineNumber: 1792,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2239,7 +2774,7 @@ function RisksAnalysis({ hasChanged, setHasChanged, points, savePoints }) {
                                                     className: "w-[4px] h-[15px] absolute left-0 top-1.5 bg-purple-400 rounded-full"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                                    lineNumber: 1556,
+                                                    lineNumber: 1809,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -2248,69 +2783,69 @@ function RisksAnalysis({ hasChanged, setHasChanged, points, savePoints }) {
                                                         hasChanged: hasChanged,
                                                         setHasChanged: setHasChanged,
                                                         initialText: point.title,
-                                                        onSave: (newText)=>savePoints(`risksAndMitigations-title-${index + 1}`, newText),
+                                                        onSave: (newText)=>savePoints(`risksAndMitigation-${"title"}-${index + 1}`, newText),
                                                         className: "text-base sm:text-lg font-semibold text-white"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/EditableStockData.tsx",
-                                                        lineNumber: 1558,
+                                                        lineNumber: 1811,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                                    lineNumber: 1557,
+                                                    lineNumber: 1810,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1555,
+                                            lineNumber: 1808,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
                                             hasChanged: hasChanged,
                                             setHasChanged: setHasChanged,
                                             initialText: point.description,
-                                            onSave: (newText)=>savePoints(`risksAndMitigations-description-${index + 1}-risk`, newText),
-                                            className: "text-sm sm:text-sm text-gray-300 mt-2"
+                                            onSave: (newText)=>savePoints(`risksAndMitigation-${"description"}-${index + 1}`, newText),
+                                            className: "text-base text-gray-300 mt-2"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/EditableStockData.tsx",
-                                            lineNumber: 1572,
+                                            lineNumber: 1825,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1554,
+                                    lineNumber: 1807,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/EditableStockData.tsx",
-                                lineNumber: 1553,
+                                lineNumber: 1806,
                                 columnNumber: 15
                             }, this)
                         }, index, false, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1549,
+                            lineNumber: 1802,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1547,
+                    lineNumber: 1800,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 1546,
+                lineNumber: 1799,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1538,
+        lineNumber: 1791,
         columnNumber: 5
     }, this);
 }
-_c7 = RisksAnalysis;
+_c8 = RisksAnalysis;
 function Conclusion({ description, hasChanged, setHasChanged, imageSrc, saveEditedContent, rec, setEditedVals, editedVals }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
         className: "w-full max-w-[80vw] mx-auto bg-zinc-900 shadow-2xl shadow-cyan-400 text-gray-100 border-0 overflow-hidden",
@@ -2325,12 +2860,12 @@ function Conclusion({ description, hasChanged, setHasChanged, imageSrc, saveEdit
                         alt: "Conclusion visual"
                     }, void 0, false, {
                         fileName: "[project]/src/components/EditableStockData.tsx",
-                        lineNumber: 1617,
+                        lineNumber: 1870,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1616,
+                    lineNumber: 1869,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
@@ -2343,12 +2878,12 @@ function Conclusion({ description, hasChanged, setHasChanged, imageSrc, saveEdit
                                 children: "Conclusion"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/EditableStockData.tsx",
-                                lineNumber: 1625,
+                                lineNumber: 1878,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1624,
+                            lineNumber: 1877,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
@@ -2364,18 +2899,18 @@ function Conclusion({ description, hasChanged, setHasChanged, imageSrc, saveEdit
                             className: "montserrat text-base sm:text-lg lg:text-xl text-center text-white"
                         }, void 0, false, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1629,
+                            lineNumber: 1882,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "flex flex-col sm:flex-row items-center mt-4 gap-2",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                    className: "font-bold text-white barlow-bold text-xl sm:text-2xl",
+                                    className: " text-white barlow text-xl lg:text-2xl",
                                     children: "Recommendation:"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1639,
+                                    lineNumber: 1892,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$editableTest$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EditableText"], {
@@ -2388,37 +2923,37 @@ function Conclusion({ description, hasChanged, setHasChanged, imageSrc, saveEdit
                                             recommendation: newText
                                         });
                                     },
-                                    className: "montserrat text-lg sm:text-xl lg:text-2xl"
+                                    className: "barlow-bold text-lg sm:text-xl lg:text-2xl"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1642,
+                                    lineNumber: 1895,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1638,
+                            lineNumber: 1891,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1623,
+                    lineNumber: 1876,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/EditableStockData.tsx",
-            lineNumber: 1615,
+            lineNumber: 1868,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1614,
+        lineNumber: 1867,
         columnNumber: 5
     }, this);
 }
-_c8 = Conclusion;
+_c9 = Conclusion;
 function parsePoints(text) {
     const strengths = [];
     const parts = text.split(/\d+\./).slice(1);
@@ -2458,21 +2993,21 @@ function LoadingCard() {
                 className: "w-16 h-16 text-blue-500"
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 1702,
+                lineNumber: 1955,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/components/EditableStockData.tsx",
-            lineNumber: 1701,
+            lineNumber: 1954,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1700,
+        lineNumber: 1953,
         columnNumber: 5
     }, this);
 }
-_c9 = LoadingCard;
+_c10 = LoadingCard;
 function ShareButton({ id, userId }) {
     _s1();
     const [isToastVisible, setIsToastVisible] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
@@ -2490,30 +3025,30 @@ function ShareButton({ id, userId }) {
                     className: "text-white w-6 h-6"
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1722,
+                    lineNumber: 1975,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 1717,
+                lineNumber: 1970,
                 columnNumber: 7
             }, this),
             isToastVisible && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Toast, {
                 viewLink: `https://stock-gen.vercel.app/viewOnlyPpt/${id}`
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 1725,
+                lineNumber: 1978,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1716,
+        lineNumber: 1969,
         columnNumber: 5
     }, this);
 }
 _s1(ShareButton, "ovHAHuJfhIpm6/6YWf2ahncTpcc=");
-_c10 = ShareButton;
+_c11 = ShareButton;
 function Toast({ viewLink }) {
     _s2();
     const [viewCopied, setViewCopied] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
@@ -2537,7 +3072,7 @@ function Toast({ viewLink }) {
                 children: "Share Links"
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 1752,
+                lineNumber: 2005,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2552,7 +3087,7 @@ function Toast({ viewLink }) {
                                     className: "w-4 h-4 flex-shrink-0"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1756,
+                                    lineNumber: 2009,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2561,13 +3096,13 @@ function Toast({ viewLink }) {
                                     children: viewLink
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/EditableStockData.tsx",
-                                    lineNumber: 1757,
+                                    lineNumber: 2010,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1755,
+                            lineNumber: 2008,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2578,40 +3113,40 @@ function Toast({ viewLink }) {
                                 className: "w-4 h-4 text-green-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/EditableStockData.tsx",
-                                lineNumber: 1767,
+                                lineNumber: 2020,
                                 columnNumber: 15
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$copy$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Copy$3e$__["Copy"], {
                                 className: "w-4 h-4"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/EditableStockData.tsx",
-                                lineNumber: 1769,
+                                lineNumber: 2022,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/EditableStockData.tsx",
-                            lineNumber: 1761,
+                            lineNumber: 2014,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1754,
+                    lineNumber: 2007,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/EditableStockData.tsx",
-                lineNumber: 1753,
+                lineNumber: 2006,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1751,
+        lineNumber: 2004,
         columnNumber: 5
     }, this);
 }
 _s2(Toast, "Gw5WCTcvimPDbheea+0ZF+LxsgQ=");
-_c11 = Toast;
+_c12 = Toast;
 function LoadingOverlay() {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50",
@@ -2622,7 +3157,7 @@ function LoadingOverlay() {
                     className: "text-blue-500"
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1782,
+                    lineNumber: 2035,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2630,29 +3165,29 @@ function LoadingOverlay() {
                     children: "Saving..."
                 }, void 0, false, {
                     fileName: "[project]/src/components/EditableStockData.tsx",
-                    lineNumber: 1783,
+                    lineNumber: 2036,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/EditableStockData.tsx",
-            lineNumber: 1781,
+            lineNumber: 2034,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/EditableStockData.tsx",
-        lineNumber: 1780,
+        lineNumber: 2033,
         columnNumber: 5
     }, this);
 }
-_c12 = LoadingOverlay;
+_c13 = LoadingOverlay;
 function roundAndConvert(input) {
     const regex = /^-?([\d.]+)([%a-zA-Z]*)$/;
     const match = input.match(regex);
     if (!match) {
         throw new Error("Invalid input format");
     }
-    const numberPart = parseFloat(match[1]);
+    const numberPart = Number.parseFloat(match[1]);
     const unit = match[2];
     const roundedNumber = Math.round(numberPart * 10) / 10;
     if (unit) {
@@ -2663,7 +3198,7 @@ function roundAndConvert(input) {
 function parsePointsToString(obj) {
     let str = "";
     obj.map((val, i)=>{
-        let s = (i + 1).toString() + ". " + val.title + ": " + val.description + "\n";
+        const s = (i + 1).toString() + ". " + val.title + ": " + val.description + "\n";
         str += s;
     });
     return str;
@@ -2673,20 +3208,21 @@ function extractName(input) {
     const parts = input.split("-");
     return parts.length > 1 ? parts[1].trim() : input.trim();
 }
-var _c, _c1, _c2, _c3, _c4, _c5, _c6, _c7, _c8, _c9, _c10, _c11, _c12;
+var _c, _c1, _c2, _c3, _c4, _c5, _c6, _c7, _c8, _c9, _c10, _c11, _c12, _c13;
 __turbopack_refresh__.register(_c, "StockDataDisplay");
 __turbopack_refresh__.register(_c1, "CompanyOverview");
 __turbopack_refresh__.register(_c2, "KeyMetrics");
 __turbopack_refresh__.register(_c3, "FinancialHealth");
 __turbopack_refresh__.register(_c4, "StrengthsAndCatalysts");
 __turbopack_refresh__.register(_c5, "GradientIcon");
-__turbopack_refresh__.register(_c6, "AnalystHealth");
-__turbopack_refresh__.register(_c7, "RisksAnalysis");
-__turbopack_refresh__.register(_c8, "Conclusion");
-__turbopack_refresh__.register(_c9, "LoadingCard");
-__turbopack_refresh__.register(_c10, "ShareButton");
-__turbopack_refresh__.register(_c11, "Toast");
-__turbopack_refresh__.register(_c12, "LoadingOverlay");
+__turbopack_refresh__.register(_c6, "FinancialSnapshot");
+__turbopack_refresh__.register(_c7, "AnalystHealth");
+__turbopack_refresh__.register(_c8, "RisksAnalysis");
+__turbopack_refresh__.register(_c9, "Conclusion");
+__turbopack_refresh__.register(_c10, "LoadingCard");
+__turbopack_refresh__.register(_c11, "ShareButton");
+__turbopack_refresh__.register(_c12, "Toast");
+__turbopack_refresh__.register(_c13, "LoadingOverlay");
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_refresh__.registerExports(module, globalThis.$RefreshHelpers$);
 }
@@ -2815,17 +3351,19 @@ _s(Page, "/sEN8/gkbTGtMMbDXWqSU9h9/ts=", false, function() {
 });
 _c = Page;
 async function getImage(_name) {
-    // const data = { stockName: _name };
-    // const res = await fetch("/api/image", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(data),
-    // });
-    // const response = await res.json();
-    // return response.imageUrl;
-    return "https://plus.unsplash.com/premium_photo-1698405316329-fd9c43d7e11c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzN8fG5vcndheXxlbnwwfHwwfHx8MA%3D%3D";
+    const data = {
+        stockName: _name
+    };
+    const res = await fetch("/api/image", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    const response = await res.json();
+    return response.imageUrl;
+    "TURBOPACK unreachable";
 }
 async function getEncodedImage(imageUrl) {
     const data = {
