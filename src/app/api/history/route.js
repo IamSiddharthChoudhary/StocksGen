@@ -4,7 +4,7 @@ import yahooFinance from "yahoo-finance2";
 function formatValue(value) {
   if (value === 0) return "0";
   if (Math.abs(value) >= 1e9) {
-    return (value / 1e9).toFixed(2) + "B";
+    return (value / 1e9).toFixed(2);
   } else if (Math.abs(value) >= 1e6) {
     return (value / 1e6).toFixed(2) + "M";
   } else {
